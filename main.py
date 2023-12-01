@@ -21,15 +21,25 @@ def readNodes(fileName):
 
 
 def getDist(a, b):
-    numpy.hypot(a, b)
+    #grab one of the y's and one of the x's
+    return numpy.hypot(a[0], b[1])
 
+def compute_graph(nodes):
+    # Store the graph with the distances. This is really an adjacency matrix (2D array)
+    adj_mat = [[]]
+    for i in nodes:
+        for j in nodes:
+            adj_mat[i][j] = getDist(i, j)
+    return adj_mat
 
 
 nodes = readNodes("tsp_14.txt")
 # "tsp_14.txt"
 
+print(compute_graph(nodes))
+# print(nodes)
 
-print(nodes)
+
 
 net = Network()
 
