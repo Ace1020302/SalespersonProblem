@@ -78,7 +78,7 @@ def printGraph(graph, labels):
     for i in range(len(labels)):
         graph[i].insert(0, labels[i])
     labels.insert(0, '')
-    print(tabulate(graph, headers=labels, tablefmt="fancy_grid"))
+    print(tabulate(graph, headers=labels, tablefmt="fancy_grid", floatfmt=".3f", numalign="center"))
     labels.remove('')
     for i in range(len(labels)):
         graph[i].remove(labels[i])
