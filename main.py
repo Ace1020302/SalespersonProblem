@@ -35,19 +35,21 @@ def getDist(a, b):
 def compute_graph(nodes):
     # Store the graph with the distances. This is really an adjacency matrix (2D array)
     # Set up adjacency matrix dimensions, square matrix len(nodes) by len(nodes)
-    rows, cols = (len(nodes), len(nodes))
+    nodeCount = len(nodes)
     # Initialize with 0 for sentinel
-    adj_mat = [[0] * cols] * rows
+    adj_mat = [[0 for i in range(nodeCount)] for j in range(nodeCount)]
     # method 2 1st approach
     # Store nodeCount instead of recalculating len(nodes) every loop
-    nodeCount = len(nodes)
+
     for i in range(nodeCount):
         for j in range(nodeCount):
             # Don't calculate repeated distances
-            # if(adj_mat[j][i] != 0):
-            #     adj_mat[i][j] = adj_mat[j][i]
-            # else:
-            adj_mat[i][j] = getDist(nodes[i], nodes[j])
+            if(adj_mat[i][j] != 0):
+                continue
+            # Calculate value once for each node.
+            distance = getDist(nodes[i], nodes[j])
+            adj_mat[i][j] = distance
+            adj_mat[j][i] = distance
             # Message to clarify distance calculation per-step after getDist
             print(f"compute_graph :: Distance between Node {i} {nodes[i]} and Node {j} {nodes[j]} = {adj_mat[i][j]}")
             print('--'*100)
