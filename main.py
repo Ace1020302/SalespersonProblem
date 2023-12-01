@@ -1,3 +1,4 @@
+import math
 import webbrowser
 import networkx as nx
 import numpy
@@ -5,11 +6,15 @@ from pyvis.network import Network
 import matplotlib.pyplot as plt
 
 
-def readNodes(fileName):
+def readNodes(fileName, skipFirstLine=True):
     arr = []
 
     file = open(fileName)
-    file.readline()
+
+    # Skips first line if it's not a point
+    if(skipFirstLine):
+        file.readline()
+
     for line in file:
         a, b = line.split()
         a = int(a)
@@ -24,7 +29,8 @@ def getDist(a, b):
     # Message to show getDist step in compute_graph
     print(f"getDist :: a = {a} | b = {b}")
     # grab one of the y's and one of the x's
-    return numpy.hypot(a[0], b[1])
+    return math.dist(a, b)
+
 
 def compute_graph(nodes):
     # Store the graph with the distances. This is really an adjacency matrix (2D array)
@@ -37,16 +43,28 @@ def compute_graph(nodes):
     nodeCount = len(nodes)
     for i in range(nodeCount):
         for j in range(nodeCount):
+            # Don't calculate repeated distances
+            # if(adj_mat[j][i] != 0):
+            #     adj_mat[i][j] = adj_mat[j][i]
+            # else:
             adj_mat[i][j] = getDist(nodes[i], nodes[j])
             # Message to clarify distance calculation per-step after getDist
             print(f"compute_graph :: Distance between Node {i} {nodes[i]} and Node {j} {nodes[j]} = {adj_mat[i][j]}")
+            print('--'*100)
     return adj_mat
 
 
 nodes = readNodes("tsp_14.txt")
 # "tsp_14.txt"
 
-print(compute_graph(nodes))
+graph = (compute_graph(nodes))
+print('==='*100)
+
+for i in range(len(graph)):
+    for j in range(len(graph)):
+        print("{0}".format(graph[i][j]), end='\t')
+    print()
+    print()
 
 
 
