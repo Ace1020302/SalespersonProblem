@@ -21,15 +21,25 @@ def readNodes(fileName):
 
 
 def getDist(a, b):
-    #grab one of the y's and one of the x's
+    # Message to show getDist step in compute_graph
+    print(f"getDist :: a = {a} | b = {b}")
+    # grab one of the y's and one of the x's
     return numpy.hypot(a[0], b[1])
 
 def compute_graph(nodes):
     # Store the graph with the distances. This is really an adjacency matrix (2D array)
-    adj_mat = [[]]
-    for i in nodes:
-        for j in nodes:
-            adj_mat[i][j] = getDist(i, j)
+    # Set up adjacency matrix dimensions, square matrix len(nodes) by len(nodes)
+    rows, cols = (len(nodes), len(nodes))
+    # Initialize with 0 for sentinel
+    adj_mat = [[0] * cols] * rows
+    # method 2 1st approach
+    # Store nodeCount instead of recalculating len(nodes) every loop
+    nodeCount = len(nodes)
+    for i in range(nodeCount):
+        for j in range(nodeCount):
+            adj_mat[i][j] = getDist(nodes[i], nodes[j])
+            # Message to clarify distance calculation per-step after getDist
+            print(f"compute_graph :: Distance between Node {i} {nodes[i]} and Node {j} {nodes[j]} = {adj_mat[i][j]}")
     return adj_mat
 
 
@@ -37,7 +47,6 @@ nodes = readNodes("tsp_14.txt")
 # "tsp_14.txt"
 
 print(compute_graph(nodes))
-# print(nodes)
 
 
 
