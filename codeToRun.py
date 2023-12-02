@@ -4,6 +4,8 @@ from tabulate import tabulate
 import networkx as nx
 import numpy
 from pyvis.network import Network
+import matplotlib
+matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 
 

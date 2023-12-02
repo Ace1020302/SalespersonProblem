@@ -3,9 +3,10 @@ from tkinter import ttk
 import codeToRun
 import sv_ttk
 
-# main = codeToRun.codeToRun()
+main = codeToRun.codeToRun()
 
-root = tkinter.Tk(screenName="Traveling Salesperson")
+root = tkinter.Tk()
+root.title("Traveling Salesperson")
 
 root.geometry("800x800")
 
