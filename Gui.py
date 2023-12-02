@@ -3,7 +3,7 @@ from tkinter import ttk
 import codeToRun
 import sv_ttk
 
-main = codeToRun.codeToRun()
+# main = codeToRun.codeToRun()
 
 root = tkinter.Tk(screenName="Traveling Salesperson")
 
@@ -17,7 +17,7 @@ time_label = ttk.Label(frame, text="", font=("Ariel", 10, "bold"))
 label.pack(pady=20)
 time_label.pack(pady=10)
 
-buttons = [ttk.Button(frame, text="Naive", style='Accent.TButton', command=main.draw_plot),
+buttons = [ttk.Button(frame, text="Naive", style='Accent.TButton'),
            ttk.Button(frame, text="Optim", style='Accent.TButton'),
            ttk.Button(frame, text="Aprox", style='Accent.TButton')]
 

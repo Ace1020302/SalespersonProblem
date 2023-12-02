@@ -80,7 +80,6 @@ class codeToRun:
         plt.show()
 
     def run(self):
-        global draw_plot
         nodes = self.readNodes("tsp_14.txt")
         labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n']
         # Testing Purposes Only
