@@ -71,6 +71,7 @@ def compute_graph(nodes):
             print('--' * 100)
     return adj_mat
 
+
 def printGraph(graph, labels):
     if len(graph[0]) > len(labels):
         print("Can't print table, not enough labels")
@@ -83,106 +84,103 @@ def printGraph(graph, labels):
     for i in range(len(labels)):
         graph[i].remove(labels[i])
 
-nodes = readNodes("tsp_14.txt")
-labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n']
 
-# Testing Purposes Only
-# For pyvis
-net = Network()
+def draw_plot():
+    plt.show()
 
-# For nx
-g = nx.Graph()
-# pos = nx.spring_layout()
-graph = (compute_graph(nodes))
-print('===' * 100)
-print('===' * 100)
-print('===' * 100)
 
-# Add Nodes to network
-for i in range(len(nodes)):
-    g.add_node(labels[i])
+def run():
+    global draw_plot
+    nodes = readNodes("tsp_14.txt")
+    labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n']
+    # Testing Purposes Only
+    # For pyvis
+    net = Network()
+    # For nx
+    g = nx.Graph()
+    # pos = nx.spring_layout()
+    graph = (compute_graph(nodes))
+    print('===' * 100)
+    print('===' * 100)
+    print('===' * 100)
+    # Add Nodes to network
+    for i in range(len(nodes)):
+        g.add_node(labels[i])
+    # Separators
+    visualSeparator()
+    # Add Our Weights
+    # for i in range(len(graph)):
+    #     for j in range(len(graph)):
+    #         print(f"Edge Weight to be added: {graph[i][j]}, {type(graph[i][j])}")
+    #         g.add_edge(graph[i], graph[j], weight=graph[i][j])
+    for i in range(len(graph)):
+        for j in range(len(graph)):
 
-# Separators
-visualSeparator()
-
-# Add Our Weights
-# for i in range(len(graph)):
-#     for j in range(len(graph)):
-#         print(f"Edge Weight to be added: {graph[i][j]}, {type(graph[i][j])}")
-#         g.add_edge(graph[i], graph[j], weight=graph[i][j])
-
-for i in range(len(graph)):
-    for j in range(len(graph)):
-
-        if (i == j):
+            if (i == j):
+                continue
+            print(f"Edge Weight to be added: From {labels[i]} to {labels[j]} --- {graph[i][j]}, {type(graph[i][j])}")
+            g.add_edge(labels[i], labels[j], weight=graph[i][j])
+    visualSeparator()
+    printGraph(graph, labels)
+    # for i in range(len(graph)):
+    #     for j in range(len(graph)):
+    #         print("{0}".format(graph[i][j]), end='\t')
+    #     print()
+    #     print()
+    visualSeparator()
+    # Compute the shortest path in g from node a to node b
+    shortPath = nx.dijkstra_path(g, 'g', 'd')
+    totalDistance = 0
+    for i in range(len(shortPath)):
+        if i == 0:
             continue
-        print(f"Edge Weight to be added: From {labels[i]} to {labels[j]} --- {graph[i][j]}, {type(graph[i][j])}")
-        g.add_edge(labels[i], labels[j], weight=graph[i][j])
+        # label idx of to find equivalent adj_mat position
+        x = labels.index(shortPath[i - 1])
+        y = labels.index(shortPath[i])
 
-visualSeparator()
+        # Get the node with that label and look up the distance between the two nodes (adj_mat)
+        print(f"Distance from {shortPath[i - 1]} to {shortPath[i]}: {graph[x][y]}")
+        totalDistance += graph[x][y]
+
+        # print
+        print(totalDistance)
+    # net.addNode("A")
+    # net.addNode("B")
+    #
+    #
+    # net.addEdge("A", "B", 10)
+    # net.addEdge("B", "A", 5)
+    #
+    # g = nx.Graph()
+    pos = nx.spring_layout(g, seed=3113794652)
+    #
+    # g.add_edge(1, 2)
+    # g.add_edge(2, 3)
+    # g.add_edge(3, 4)
+    # g.add_edge(1, 4)
+    # g.add_edge(1, 5)
+    # g.add_edge(3, 3)
+    # g.add_edge(6, 4)
+    #
+    #
+    nx.draw(g, pos=pos, with_labels=True)
+
+    # nx.draw_networkx_edge_labels(g, pos, edge_labels=nx.get_edge_attributes(g,'weight'))
+    #
+    #
+    # net.from_nx(g)
+
+    # net.show("nx.html", notebook=False)
+    #
+    #
+    # webbrowser.open('http://localhost:63342/TravelingSalesperson/nx.html')
+    # plt.savefig("filename.png")
 
 
-printGraph(graph, labels)
+def __init__():
+    run()
 
-# for i in range(len(graph)):
-#     for j in range(len(graph)):
-#         print("{0}".format(graph[i][j]), end='\t')
-#     print()
-#     print()
-
-visualSeparator()
-
-# Compute the shortest path in g from node a to node b
-shortPath = nx.dijkstra_path(g, 'g', 'd')
-
-totalDistance = 0
-for i in range(len(shortPath)):
-    if i == 0:
-        continue
-    # label idx of to find equivalent adj_mat position
-    x = labels.index(shortPath[i - 1])
-    y = labels.index(shortPath[i])
-
-    # Get the node with that label and look up the distance between the two nodes (adj_mat)
-    print(f"Distance from {shortPath[i - 1]} to {shortPath[i]}: {graph[x][y]}")
-    totalDistance += graph[x][y]
-
-    # print
-    print(totalDistance)
-
-# net.addNode("A")
-# net.addNode("B")
 #
-#
-# net.addEdge("A", "B", 10)
-# net.addEdge("B", "A", 5)
-
-
-#
-# g = nx.Graph()
-pos = nx.spring_layout(g, seed=3113794652)
-#
-# g.add_edge(1, 2)
-# g.add_edge(2, 3)
-# g.add_edge(3, 4)
-# g.add_edge(1, 4)
-# g.add_edge(1, 5)
-# g.add_edge(3, 3)
-# g.add_edge(6, 4)
-#
-#
-nx.draw(g, pos=pos, with_labels=True)
-
-# nx.draw_networkx_edge_labels(g, pos, edge_labels=nx.get_edge_attributes(g,'weight'))
-#
-#
-# net.from_nx(g)
-
-
-plt.show()
-# net.show("nx.html", notebook=False)
-#
-#
-# webbrowser.open('http://localhost:63342/TravelingSalesperson/nx.html')
-
-# plt.savefig("filename.png")
+if __name__ == "__main__":
+    run()
+    draw_plot()
