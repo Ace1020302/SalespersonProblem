@@ -25,11 +25,13 @@ class codeToRun:
         if (skipFirstLine):
             file.readline()
 
+        label = 0 #Label keeps track of the index needed to access the coordinates value in the graph
         for line in file:
             a, b = line.split()
             a = int(a)
             b = int(b)
-            arr.append((a, b))
+            arr.append((a, b,label)) # { a, b, label }
+            label += 1
 
         file.close()
         return arr
@@ -91,6 +93,7 @@ class codeToRun:
         g = nx.Graph()
         # pos = nx.spring_layout()
         graph = (self.compute_graph(nodes))
+        print(graph[nodes[12][2]][nodes[13][2]]) #This does something but it works
         print('===' * 100)
         print('===' * 100)
         print('===' * 100)

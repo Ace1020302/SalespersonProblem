@@ -6,6 +6,8 @@ import numpy
 from pyvis.network import Network
 import matplotlib.pyplot as plt
 
+import Algorithms
+
 
 # Text boxes
 # Phillip:  This is where we type to one another during live share
@@ -29,11 +31,13 @@ def readNodes(fileName, skipFirstLine=True):
     if (skipFirstLine):
         file.readline()
 
+    label = 0
     for line in file:
         a, b = line.split()
         a = int(a)
         b = int(b)
-        arr.append((a, b))
+        arr.append((a, b, label))
+        label += 1
 
     file.close()
     return arr
@@ -100,6 +104,7 @@ def run():
     g = nx.Graph()
     # pos = nx.spring_layout()
     graph = (compute_graph(nodes))
+    print(graph[nodes[12][2]][nodes[13][2]]) #This accesses whichever node we want in the adj_mat
     print('===' * 100)
     print('===' * 100)
     print('===' * 100)
@@ -117,7 +122,7 @@ def run():
         for j in range(len(graph)):
             if (i == j):
                 continue
-            print(f"Edge Weight to be added: From {labels[i]} to {labels[j]} --- {graph[i][j]}, {type(graph[i][j])}")
+            #print(f"Edge Weight to be added: From {labels[i]} to {labels[j]} --- {graph[i][j]}, {type(graph[i][j])}")
             g.add_edge(labels[i], labels[j], weight=graph[i][j])
     visualSeparator()
     printGraph(graph, labels)
@@ -128,21 +133,7 @@ def run():
     #     print()
     visualSeparator()
     # Compute the shortest path in g from node a to node b
-    shortPath = nx.dijkstra_path(g, 'g', 'd')
-    totalDistance = 0
-    for i in range(len(shortPath)):
-        if i == 0:
-            continue
-        # label idx of to find equivalent adj_mat position
-        x = labels.index(shortPath[i - 1])
-        y = labels.index(shortPath[i])
-
-        # Get the node with that label and look up the distance between the two nodes (adj_mat)
-        print(f"Distance from {shortPath[i - 1]} to {shortPath[i]}: {graph[x][y]}")
-        totalDistance += graph[x][y]
-
-        # print
-        print(totalDistance)
+    find_shortest_path(g, graph, labels)
     # net.addNode("A")
     # net.addNode("B")
     #
@@ -163,7 +154,8 @@ def run():
     #
     #
     nx.draw(g, pos=pos, with_labels=True)
-
+    algo = Algorithms.Algorithms()
+    print(algo.Naive(graph, nodes))
     # nx.draw_networkx_edge_labels(g, pos, edge_labels=nx.get_edge_attributes(g,'weight'))
     #
     #
@@ -174,6 +166,24 @@ def run():
     #
     # webbrowser.open('http://localhost:63342/TravelingSalesperson/nx.html')
     # plt.savefig("filename.png")
+
+
+def find_shortest_path(g, graph, labels):
+    shortPath = nx.dijkstra_path(g, 'g', 'd')
+    totalDistance = 0
+    for i in range(len(shortPath)):
+        if i == 0:
+            continue
+        # label idx of to find equivalent adj_mat position
+        x = labels.index(shortPath[i - 1])
+        y = labels.index(shortPath[i])
+
+        # Get the node with that label and look up the distance between the two nodes (adj_mat)
+        print(f"Distance from {shortPath[i - 1]} to {shortPath[i]}: {graph[x][y]}")
+        totalDistance += graph[x][y]
+
+        # print
+        print(totalDistance)
 
 
 def __init__():
