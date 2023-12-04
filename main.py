@@ -115,7 +115,6 @@ def run():
     #         g.add_edge(graph[i], graph[j], weight=graph[i][j])
     for i in range(len(graph)):
         for j in range(len(graph)):
-
             if (i == j):
                 continue
             print(f"Edge Weight to be added: From {labels[i]} to {labels[j]} --- {graph[i][j]}, {type(graph[i][j])}")
