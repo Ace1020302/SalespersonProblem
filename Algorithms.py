@@ -5,6 +5,9 @@ class Algorithms:
         pass
 
     def OptimialNaive(self):
+        # The shortest Path should be at least bigger than greedy.
+        shortestPath = self.GreedyBound()
+
         pass
 
     def Approximation(self):
