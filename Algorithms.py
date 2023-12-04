@@ -10,6 +10,5 @@ class Algorithms:
     def Approximation(self):
         pass
 
-
     def GreedyBound(self):
         pass
