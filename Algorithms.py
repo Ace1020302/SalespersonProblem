@@ -48,7 +48,14 @@ class Algorithms:
         shortestPath = []
 
         # Create MST of G using Prims
-        print(self.MST_Prim(graph, nodes, start))
+        print("test")
+        mst_walk = self.MST_Prim(graph, nodes, start)
+        print(mst_walk)
+
+        preorder_walk = list(set(mst_walk))
+        print("test")
+        print(preorder_walk)
+
 
         #
 
@@ -56,22 +63,32 @@ class Algorithms:
 
 
 
-    def MST_Prim(self, graph, nodes, start):
+    def MST_Prim(self, edge_graph, nodes, start):
+        # Set of which nodes (keys) have been indexed. Node[2] = key of node
         mst = []
-        # Add first vertex into tree
-        mst.append(start)
 
+        # Get the edges connected to the node minus self edges
         edges = self.getEdgesFromGraph(start, nodes, graph)
 
+        # Sets the current node to the start node
         current_node = start
 
-        while len(mst) < len(nodes):
-            minEdge = self.findMinEdge(graph, current_node, edges)
-            mst.append(minEdge)
-            for edge in self.getEdgesFromGraph(minEdge, nodes, graph):
-                if(edge not in edges):
-                    edges.append(edge)
-            edges.remove(minEdge)
+        n = len(nodes)
+        for u in n:
+          minEdge = self.findMinEdge(graph, current_node, edges)
+          mst.append(current_node) # Adds key of the node to the searched list
+
+           for v in n:
+               notInSet = True
+               # mst[i] = (x, y, key) @ index i
+               # mst[i][2] = key at index
+               if(nodes[v] in mst):
+                   notInSet = False
+
+               if (graph[u][v] > 0) and (notInSet) and (start > graph[u][v]):
+                   start = graph[u][v]
+
+            current_node = minEdge # Grabs the node that the current node connects to?
 
         return mst
 
