@@ -153,7 +153,8 @@ def run():
     #
     nx.draw(g, pos=pos, with_labels=True)
     algo = Algorithms.Algorithms()
-    tmpVar = algo.Approximation(graph, nodes, nodes[0])
+    #tmpVar = algo.Approximation(graph, nodes, nodes[0])
+    algo.Naive(graph, nodes)
     # nx.draw_networkx_edge_labels(g, pos, edge_labels=nx.get_edge_attributes(g,'weight'))
     #
     #
