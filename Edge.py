@@ -1,12 +1,12 @@
 
 class Edge:
-    def __init__(self, nodeA, nodeB, cost=0):
+    def __init__(self, nodeA, nodeB, distance=0):
         self.nodeA = nodeA
         self.nodeB = nodeB
-        self.cost = cost
+        self.distance = distance
 
-    def setCost(self, cost):
-        self.cost = cost
+    def setDistance(self, distance):
+        self.distance = distance
 
     def setNodes(self, nodeA, nodeB):
         self.nodeA = nodeA

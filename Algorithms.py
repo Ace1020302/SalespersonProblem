@@ -7,7 +7,6 @@ class Algorithms:
         print(self.permute_iterative(nodes, 0, 10, graph, 1000000))
 
         return shortest_path
-        pass
 
     #Calculates the path of each individual node between another node
     def calculate_path_cost(self, arr, graph):
@@ -80,20 +79,17 @@ class Algorithms:
     def OptimialNaive(self, nodes):
         pass
 
-    def Approximation(self, graph, nodes, start):
+    def Approximation(self, edge_graph, nodes, start):
         shortestPath = []
 
         # Create MST of G using Prims
         print("test")
-        mst_walk = self.MST_Prim(graph, nodes, start)
+        mst_walk = self.MST_Prim(edge_graph, nodes, start)
         print(mst_walk)
 
         preorder_walk = list(set(mst_walk))
         print("test")
         print(preorder_walk)
-
-
-        #
 
         return shortestPath
 
@@ -101,32 +97,30 @@ class Algorithms:
 
     def MST_Prim(self, edge_graph, nodes, start):
         # Set of which nodes (keys) have been indexed. Node[2] = key of node
-        mst = []
+        mstNodes = []
 
         # Get the edges connected to the node minus self edges
-        edges = self.getEdgesFromGraph(start, nodes, graph)
+        edges = self.getEdgesFromGraph(start, nodes, edge_graph)
 
         # Sets the current node to the start node
         current_node = start
 
         n = len(nodes)
         for u in n:
-          minEdge = self.findMinEdge(graph, current_node, edges)
-          mst.append(current_node) # Adds key of the node to the searched list
-
-           for v in n:
+            minEdge = self.findMinEdge(edge_graph, current_node, edges)
+            mstNodes.append(current_node) # Adds key of the node to the searched list
+            for v in n:
                notInSet = True
                # mst[i] = (x, y, key) @ index i
                # mst[i][2] = key at index
-               if(nodes[v] in mst):
+               if(nodes[v] in mstNodes):
                    notInSet = False
 
-               if (graph[u][v] > 0) and (notInSet) and (start > graph[u][v]):
-                   start = graph[u][v]
+               if (edge_graph[u][v] > 0) and (notInSet) and (start > edge_graph[u][v]):
+                   start = edge_graph[u][v]
 
             current_node = minEdge # Grabs the node that the current node connects to?
-
-        return mst
+        return mstNodes
 
 
     def findMinEdge(self, graph, node, edges):
