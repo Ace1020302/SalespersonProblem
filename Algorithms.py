@@ -80,8 +80,61 @@ class Algorithms:
     def OptimialNaive(self, nodes):
         pass
 
-    def Approximation(self, nodes):
-        pass
+    def Approximation(self, graph, nodes, start):
+        shortestPath = []
+
+        # Create MST of G using Prims
+        print(self.MST_Prim(graph, nodes, start))
+
+        #
+
+        return shortestPath
+
+
+
+    def MST_Prim(self, graph, nodes, start):
+        mst = []
+        # Add first vertex into tree
+        mst.append(start)
+
+        edges = self.getEdgesFromGraph(start, nodes, graph)
+
+        current_node = start
+
+        while len(mst) < len(nodes):
+            minEdge = self.findMinEdge(graph, current_node, edges)
+            mst.append(minEdge)
+            for edge in self.getEdgesFromGraph(minEdge, nodes, graph):
+                if(edge not in edges):
+                    edges.append(edge)
+            edges.remove(minEdge)
+
+        return mst
+
+
+    def findMinEdge(self, graph, node, edges):
+        # Find minimum cost edge
+        minEdge = edges[0]
+
+        # Finding the min cost edge
+        for i in range(len(edges)):
+            if(graph[node[2]][minEdge[2]] > graph[node[2]][edges[i][2]]):
+                minEdge = edges[i]
+
+        return minEdge
+
+
+    def getEdgesFromGraph(self, node, nodes, graph):
+        # arr of nodes that have an edge to the given node
+        arr = []
+        node_key = node[2]
+        for i in range(len(graph[node_key])):
+            # Avoid Self Edges
+            if(i == node_key):
+                continue
+            else:
+                arr.append(nodes[i])
+        return arr
 
 
     def GreedyBound(self, nodes):
