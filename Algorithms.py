@@ -2,17 +2,10 @@
 
 class Algorithms:
     def Naive(self, graph, nodes): #Need source, visited paramters
-        shortest_path = [] #This is going to be returned
-        #current_dist, min_dist = 0
-
+        shortest_path = []
         arr = [nodes[0], nodes[1], nodes[2]]
-        print(self.calculate_path_cost(arr, graph))
-        #Setup tree structures?
-        #Source node goes to every other node, then move to the next (i.e., a to b, a to c, ... then b to c)
-        #Cycle till we get the shortest path, or timeout
+        print(self.permute(nodes, 0, 14, graph))
 
-        #if(current_dist < min_dist):
-        #    min_dist = current_dist
         return shortest_path
         pass
 
@@ -24,6 +17,29 @@ class Algorithms:
             second_point = arr[i][2]
             sum += graph[first_point][second_point]
         return sum
+
+    #TODO: Add functionality to track when source node changes and increment a counter to keep track
+    #TODO: Fix error where currentDist is called every time and the shortest distance is incorrect
+    def permute(self, arr, l, r, graph):
+        import time
+        currentDist = 1000000
+        list = []
+        counter = 0
+
+        if l == r:
+            newDist = self.calculate_path_cost(arr, graph)
+            print('Distance: ', newDist)
+            print(newDist)
+            if currentDist > newDist:
+                currentDist = newDist
+                print('New Shortest Distance: ', currentDist)
+            time.sleep(4)
+        else:
+            for i in range(l,r):
+                arr[l], arr[i] = arr[i], arr[l]
+                self.permute(arr, l + 1, r, graph)
+                arr[l], arr[i] = arr[i], arr[l]
+
 
     def OptimialNaive(self, nodes):
         pass
