@@ -15,6 +15,9 @@ import Algorithms
 # Travis:
 # Noah:
 # Jason:
+from Edge import Edge
+from Node import Node
+
 
 def visualSeparator():
     print('===' * 100)
@@ -42,6 +45,28 @@ def readNodes(fileName, skipFirstLine=True):
     file.close()
     return arr
 
+def readNewNodes(fileName, skipFirstLine=True):
+    arr = []
+
+    file = open(fileName)
+
+    # Skips first line if it's not a point
+    if (skipFirstLine):
+        file.readline()
+
+    key = 0
+    for line in file:
+        a, b = line.split()
+        a = int(a)
+        b = int(b)
+        node = Node.Node()
+        node.coords = (a, b)
+        node.key = key # Index needed to access element in our graph
+        arr.append(node)
+        key += 1
+
+    file.close()
+    return arr
 
 def getDist(a, b):
     # Message to show getDist step in compute_graph
@@ -89,6 +114,32 @@ def printGraph(graph, labels):
         graph[i].remove(labels[i])
 
 
+def compute_edge_graph(self, nodes):
+    # Store the graph with the distances. This is really an adjacency matrix (2D array)
+    # Set up adjacency matrix dimensions, square matrix len(nodes) by len(nodes)
+    nodeCount = len(nodes)
+    # Initialize with 0 for sentinel
+    adj_mat = [[0 for i in range(nodeCount)] for j in range(nodeCount)]
+    # method 2 1st approach
+    # Store nodeCount instead of recalculating len(nodes) every loop
+
+    for i in range(nodeCount):
+        for j in range(nodeCount):
+            # Don't calculate repeated distances
+            if (adj_mat[i][j] != 0):
+                continue
+            # Calculate value once for each node.
+            distance = self.getDist(nodes[i], nodes[j])
+            edge = Edge.Edge(nodes[i], nodes[j], distance)
+            adj_mat[i][j] = edge
+            adj_mat[j][i] = edge
+            # Message to clarify distance calculation per-step after getDist
+            # print(
+                # f"compute_graph :: Distance between Node {i} {nodes[i]} and Node {j} {nodes[j]} = {adj_mat[i][j]}")
+            # print('--' * 100)
+    return adj_mat
+
+
 def draw_plot():
     plt.show()
 
@@ -96,74 +147,39 @@ def draw_plot():
 def run():
     global draw_plot
     nodes = readNodes("tsp_14.txt")
+    new_nodes = readNewNodes("tsp_14.txt")
     labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n']
     # Testing Purposes Only
-    # For pyvis
-    net = Network()
-    # For nx
+
     g = nx.Graph()
-    # pos = nx.spring_layout()
+
     graph = (compute_graph(nodes))
+    edge_graph = compute_edge_graph(new_nodes)
     print(graph[nodes[12][2]][nodes[13][2]]) #This accesses whichever node we want in the adj_mat
-    # visualSeparator()
+
     # Add Nodes to network
     for i in range(len(nodes)):
         g.add_node(labels[i])
     # Separators
     visualSeparator()
-    # Add Our Weights
-    # for i in range(len(graph)):
-    #     for j in range(len(graph)):
-    #         print(f"Edge Weight to be added: {graph[i][j]}, {type(graph[i][j])}")
-    #         g.add_edge(graph[i], graph[j], weight=graph[i][j])
+
     for i in range(len(graph)):
         for j in range(len(graph)):
             if (i == j):
                 continue
             #print(f"Edge Weight to be added: From {labels[i]} to {labels[j]} --- {graph[i][j]}, {type(graph[i][j])}")
             g.add_edge(labels[i], labels[j], weight=graph[i][j])
-    # visualSeparator()
+
     printGraph(graph, labels)
-    # for i in range(len(graph)):
-    #     for j in range(len(graph)):
-    #         print("{0}".format(graph[i][j]), end='\t')
-    #     print()
-    #     print()
-    # visualSeparator()
-    # Compute the shortest path in g from node a to node b
-    # find_shortest_path(g, graph, labels)
-    # net.addNode("A")
-    # net.addNode("B")
-    #
-    #
-    # net.addEdge("A", "B", 10)
-    # net.addEdge("B", "A", 5)
-    #
-    # g = nx.Graph()
+
     pos = nx.spring_layout(g, seed=3113794652)
-    #
-    # g.add_edge(1, 2)
-    # g.add_edge(2, 3)
-    # g.add_edge(3, 4)
-    # g.add_edge(1, 4)
-    # g.add_edge(1, 5)
-    # g.add_edge(3, 3)
-    # g.add_edge(6, 4)
-    #
-    #
+
+
     nx.draw(g, pos=pos, with_labels=True)
     algo = Algorithms.Algorithms()
-    #tmpVar = algo.Approximation(graph, nodes, nodes[0])
-    algo.Naive(graph, nodes)
-    # nx.draw_networkx_edge_labels(g, pos, edge_labels=nx.get_edge_attributes(g,'weight'))
-    #
-    #
-    # net.from_nx(g)
 
-    # net.show("nx.html", notebook=False)
-    #
-    #
-    # webbrowser.open('http://localhost:63342/TravelingSalesperson/nx.html')
+    tmpVar = algo.Approximation(edge_graph, new_nodes, new_nodes[0])
+
     # plt.savefig("filename.png")
 
 

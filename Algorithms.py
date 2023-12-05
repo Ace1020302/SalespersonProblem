@@ -2,12 +2,11 @@
 
 class Algorithms:
     def Naive(self, graph, nodes): #Need source, visited paramters
-        #sanity check
-        arr1 = [ (-193, 8782, 2), (-5168, 2636, 3), (-4521, 1266, 11), (-7005, 2118, 6),
-                 (-9860, 1311, 13), (-9955, -2923, 5), (-8022, -3864, 4), (-7795, -5000, 10), (-3138, -2512, 0),
-                 (7775, -8002, 7), (9478, -1973, 9), (6804, -1072, 1), (4244, -1339, 8), (-192, 3337, 12)]
-        print(self.permute_iterative(nodes, 0, 10, graph, 1000000)) #10 nodes hit
-        pass
+        shortest_path = []
+        arr = [nodes[0], nodes[1], nodes[2]]
+        print(self.permute_iterative(nodes, 0, 10, graph, 1000000))
+
+        return shortest_path
 
     #Calculates the path of each individual node between another node
     def calculate_path_cost(self, arr, graph):
@@ -18,74 +17,110 @@ class Algorithms:
             sum += graph[first_point][second_point]
         return sum
 
-    #Every permutation of the possible nodes
+    #TODO: Add functionality to track when source node changes and increment a counter to keep track
+    #TODO: Fix error where currentDist is called every time and the shortest distance is incorrect
+    def permute(self, arr, l, r, graph, dist):
+        import time
+
+        list = []
+        counter = 0
+        source = arr[0]
+        file = open('distance.txt')
+        if(source != arr[0]):
+            counter += 1
+            source = arr[0]
+
+        if l == r:
+            newDist = self.calculate_path_cost(arr, graph)
+            print('Distance: ', newDist)
+            #if dist > newDist:
+            #    dist = newDist
+            #    print('New Shortest Distance: ', dist)
+            time.sleep(4)
+        else:
+            for i in range(l,r):
+                arr[l], arr[i] = arr[i], arr[l]
+                self.permute(arr, l + 1, r, graph, dist)
+                arr[l], arr[i] = arr[i], arr[l]
+        file.close()
+        return counter
+
     def permute_iterative(self, arr, l, r, graph, dist):
         import time
-        import math
+        stack = []
+        result = []
 
-        stack = [] #stack to hold the list of nodes and the first and final index
         stack.append((list(arr), l, r))
 
-        source = arr[0] #Keeping track of what our "source" node is
         start = time.time()
+        #file = open('distance.txt', 'w')
         while stack:
             arr, l, r = stack.pop()
-            origDist = 0 #Reset original distance
-
             if l == r:
-                if source != arr[0]:
-                    source = arr[0]
-                    origDist = math.dist([0,0,0], arr[0]) #Calculating the distance from the origin to our first point
-                    print(f'From Origin: {0, 0} + {arr[0]} = {origDist}')
-                newDist = origDist + self.calculate_path_cost(arr, graph)
+                newDist = self.calculate_path_cost(arr, graph)
                 print(f'Distance: {newDist}')
-                time.sleep(5)
+                #file.write(f'Distance: {newDist}\n')
                 if dist > newDist:
                     dist = newDist
                     print(f'New Shortest Distance: {dist}')
                 print(arr)
+                #time.sleep(5)
             else:
                 for i in range(l, r):
                     arr[l], arr[i] = arr[i], arr[l]
                     stack.append((list(arr), l + 1, r))
                     arr[l], arr[i] = arr[i], arr[l]
-        finalToOrigin = math.dist(arr[r], [0, 0, 0])
-        print(f'Final Node To Origin: {arr[r]} + {[0, 0]} = {finalToOrigin}')
-        return time.time() - start, dist + finalToOrigin
+        #file.close()
+        return time.time() - start
+
+
+
 
     def OptimialNaive(self, nodes):
         pass
 
-    def Approximation(self, graph, nodes, start):
+    def Approximation(self, edge_graph, nodes, start):
         shortestPath = []
 
         # Create MST of G using Prims
-        print(self.MST_Prim(graph, nodes, start))
+        print("test")
+        mst_walk = self.MST_Prim(edge_graph, nodes, start)
+        print(mst_walk)
 
-        #
+        preorder_walk = list(set(mst_walk))
+        print("test")
+        print(preorder_walk)
 
         return shortestPath
 
 
 
-    def MST_Prim(self, graph, nodes, start):
-        mst = []
-        # Add first vertex into tree
-        mst.append(start)
+    def MST_Prim(self, edge_graph, nodes, start):
+        # Set of which nodes (keys) have been indexed. Node[2] = key of node
+        mstNodes = []
 
-        edges = self.getEdgesFromGraph(start, nodes, graph)
+        # Get the edges connected to the node minus self edges
+        edges = self.getEdgesFromGraph(start, nodes, edge_graph)
 
+        # Sets the current node to the start node
         current_node = start
 
-        while len(mst) < len(nodes):
-            minEdge = self.findMinEdge(graph, current_node, edges)
-            mst.append(minEdge)
-            for edge in self.getEdgesFromGraph(minEdge, nodes, graph):
-                if(edge not in edges):
-                    edges.append(edge)
-            edges.remove(minEdge)
+        n = len(nodes)
+        for u in n:
+            minEdge = self.findMinEdge(edge_graph, current_node, edges)
+            mstNodes.append(current_node) # Adds key of the node to the searched list
+            for v in n:
+               notInSet = True
+               # mst[i] = (x, y, key) @ index i
+               # mst[i][2] = key at index
+               if(nodes[v] in mstNodes):
+                   notInSet = False
 
-        return mst
+               if (edge_graph[u][v] > 0) and (notInSet) and (start > edge_graph[u][v]):
+                   start = edge_graph[u][v]
+
+            current_node = minEdge # Grabs the node that the current node connects to?
+        return mstNodes
 
 
     def findMinEdge(self, graph, node, edges):

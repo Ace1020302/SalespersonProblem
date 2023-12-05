@@ -5,6 +5,9 @@ import networkx as nx
 import numpy
 from pyvis.network import Network
 import matplotlib
+
+import Edge
+
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 
@@ -68,6 +71,33 @@ class codeToRun:
                 print('--' * 100)
         return adj_mat
 
+
+    def compute_node_graph(self, nodes):
+        # Store the graph with the distances. This is really an adjacency matrix (2D array)
+        # Set up adjacency matrix dimensions, square matrix len(nodes) by len(nodes)
+        nodeCount = len(nodes)
+        # Initialize with 0 for sentinel
+        adj_mat = [[0 for i in range(nodeCount)] for j in range(nodeCount)]
+        # method 2 1st approach
+        # Store nodeCount instead of recalculating len(nodes) every loop
+
+        for i in range(nodeCount):
+            for j in range(nodeCount):
+                # Don't calculate repeated distances
+                if (adj_mat[i][j] != 0):
+                    continue
+                # Calculate value once for each node.
+                distance = self.getDist(nodes[i], nodes[j])
+                edge = Edge.Edge(nodes[i], nodes[j], distance)
+                adj_mat[i][j] = edge
+                adj_mat[j][i] = edge
+                # Message to clarify distance calculation per-step after getDist
+                # print(
+                    # f"compute_graph :: Distance between Node {i} {nodes[i]} and Node {j} {nodes[j]} = {adj_mat[i][j]}")
+                # print('--' * 100)
+        return adj_mat
+
+
     def printGraph(self, graph, labels):
         if len(graph[0]) > len(labels):
             print("Can't print table, not enough labels")
@@ -93,6 +123,7 @@ class codeToRun:
         g = nx.Graph()
         # pos = nx.spring_layout()
         graph = (self.compute_graph(nodes))
+        node_graph = self.compute_node_graph(nodes)
         print(graph[nodes[12][2]][nodes[13][2]]) #This does something but it works
         print('===' * 100)
         print('===' * 100)
