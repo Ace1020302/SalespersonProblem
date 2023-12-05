@@ -45,7 +45,7 @@ def readNodes(fileName, skipFirstLine=True):
 
 def getDist(a, b):
     # Message to show getDist step in compute_graph
-    print(f"getDist :: a = {a} | b = {b}")
+    # print(f"getDist :: a = {a} | b = {b}")
     # grab one of the y's and one of the x's
     return math.dist(a, b)
 
@@ -71,8 +71,8 @@ def compute_graph(nodes):
             adj_mat[i][j] = distance
             adj_mat[j][i] = distance
             # Message to clarify distance calculation per-step after getDist
-            print(f"compute_graph :: Distance between Node {i} {nodes[i]} and Node {j} {nodes[j]} = {adj_mat[i][j]}")
-            print('--' * 100)
+            # print(f"compute_graph :: Distance between Node {i} {nodes[i]} and Node {j} {nodes[j]} = {adj_mat[i][j]}")
+            # print('--' * 100)
     return adj_mat
 
 
@@ -105,9 +105,7 @@ def run():
     # pos = nx.spring_layout()
     graph = (compute_graph(nodes))
     print(graph[nodes[12][2]][nodes[13][2]]) #This accesses whichever node we want in the adj_mat
-    print('===' * 100)
-    print('===' * 100)
-    print('===' * 100)
+    # visualSeparator()
     # Add Nodes to network
     for i in range(len(nodes)):
         g.add_node(labels[i])
@@ -124,16 +122,16 @@ def run():
                 continue
             #print(f"Edge Weight to be added: From {labels[i]} to {labels[j]} --- {graph[i][j]}, {type(graph[i][j])}")
             g.add_edge(labels[i], labels[j], weight=graph[i][j])
-    visualSeparator()
+    # visualSeparator()
     printGraph(graph, labels)
     # for i in range(len(graph)):
     #     for j in range(len(graph)):
     #         print("{0}".format(graph[i][j]), end='\t')
     #     print()
     #     print()
-    visualSeparator()
+    # visualSeparator()
     # Compute the shortest path in g from node a to node b
-    find_shortest_path(g, graph, labels)
+    # find_shortest_path(g, graph, labels)
     # net.addNode("A")
     # net.addNode("B")
     #
@@ -155,7 +153,7 @@ def run():
     #
     nx.draw(g, pos=pos, with_labels=True)
     algo = Algorithms.Algorithms()
-    print(algo.Naive(graph, nodes))
+    tmpVar = algo.Approximation(graph, nodes, nodes[0])
     # nx.draw_networkx_edge_labels(g, pos, edge_labels=nx.get_edge_attributes(g,'weight'))
     #
     #
@@ -192,4 +190,4 @@ def __init__():
 #
 if __name__ == "__main__":
     run()
-    draw_plot()
+    # draw_plot()
