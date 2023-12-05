@@ -4,7 +4,7 @@ class Algorithms:
     def Naive(self, graph, nodes): #Need source, visited paramters
         shortest_path = []
         arr = [nodes[0], nodes[1], nodes[2]]
-        print(self.permute(nodes, 0, 14, graph))
+        print(self.permute_iterative(nodes, 0, 10, graph, 1000000))
 
         return shortest_path
         pass
@@ -20,25 +20,61 @@ class Algorithms:
 
     #TODO: Add functionality to track when source node changes and increment a counter to keep track
     #TODO: Fix error where currentDist is called every time and the shortest distance is incorrect
-    def permute(self, arr, l, r, graph):
+    def permute(self, arr, l, r, graph, dist):
         import time
-        currentDist = 1000000
+
         list = []
         counter = 0
+        source = arr[0]
+        file = open('distance.txt')
+        if(source != arr[0]):
+            counter += 1
+            source = arr[0]
 
         if l == r:
             newDist = self.calculate_path_cost(arr, graph)
             print('Distance: ', newDist)
-            print(newDist)
-            if currentDist > newDist:
-                currentDist = newDist
-                print('New Shortest Distance: ', currentDist)
+            #if dist > newDist:
+            #    dist = newDist
+            #    print('New Shortest Distance: ', dist)
             time.sleep(4)
         else:
             for i in range(l,r):
                 arr[l], arr[i] = arr[i], arr[l]
-                self.permute(arr, l + 1, r, graph)
+                self.permute(arr, l + 1, r, graph, dist)
                 arr[l], arr[i] = arr[i], arr[l]
+        file.close()
+        return counter
+
+    def permute_iterative(self, arr, l, r, graph, dist):
+        import time
+        stack = []
+        result = []
+
+        stack.append((list(arr), l, r))
+
+        start = time.time()
+        #file = open('distance.txt', 'w')
+        while stack:
+            arr, l, r = stack.pop()
+            if l == r:
+                newDist = self.calculate_path_cost(arr, graph)
+                print(f'Distance: {newDist}')
+                #file.write(f'Distance: {newDist}\n')
+                if dist > newDist:
+                    dist = newDist
+                    print(f'New Shortest Distance: {dist}')
+                print(arr)
+                #time.sleep(5)
+            else:
+                for i in range(l, r):
+                    arr[l], arr[i] = arr[i], arr[l]
+                    stack.append((list(arr), l + 1, r))
+                    arr[l], arr[i] = arr[i], arr[l]
+        #file.close()
+        return time.time() - start
+
+
 
 
     def OptimialNaive(self, nodes):
