@@ -1,5 +1,8 @@
 # This is where we will do the algorithms
 import copy
+from collections import deque
+
+from Node import Node
 
 
 class Algorithms:
@@ -74,6 +77,43 @@ class Algorithms:
 
         return shortestPath
 
+    def N_Approximation(self, edgeGraph, nodes, start):
+        # These nodes are actually node objects!
+        shortestPath = []
+
+        node_dict = {node.key: node for node in nodes}
+
+        mst = self.MST_Prim(edgeGraph, nodes, start, len(nodes))
+        for i in range(len(mst)-1):
+            nodeA, nodeB = mst[i], mst[i+1]
+            nodeB.parent = nodeA
+            nodeA.children.append(nodeB)
+
+
+        origin_key = start.key
+        origin_node = node_dict[origin_key]
+
+        queue = deque()
+        self.preorder_walk(origin_node, queue)
+
+        for i in range(len(mst)):
+            print(mst[i].key, end=', ')
+        print()
+        print('=' * 50)
+        for i in range(len(queue)):
+            print(queue.popleft().key, end=', ')
+
+        # The missing part of the approx algo
+
+        return shortestPath
+
+    def preorder_walk(self, node, queue):
+        # shortestPath.append(node.key)
+        queue.append(node)
+        for child in node.children:
+            self.preorder_walk(child, queue)
+
+
     def MST_Prim(self, edgeGraph, nodes, startNode, n):
         # mst arr
         mst = []
@@ -88,14 +128,14 @@ class Algorithms:
             nextNode = minEdge.nodeB
             mst.append(s)
             # print(tmpUnchecked)
-            if(s in tmpUnchecked):
-                print(s.key, " in tmpUnchecked. Will be removed.")
-            else:
-                print(s.key, " in not tmpUnchecked. Will not be removed. Major Tom to ground control")
+            # if(s in tmpUnchecked):
+            #     print(s.key, " in tmpUnchecked. Will be removed.")
+            # else:
+            #     print(s.key, " in not tmpUnchecked. Will not be removed. Major Tom to ground control")
             tmpUnchecked.remove(s)
             s = nextNode
-            print(s.key, " is new node")
-            print("=" * 50)
+            # print(s.key, " is new node")
+            # print("=" * 50)
 
 
         return mst
@@ -121,13 +161,14 @@ class Algorithms:
         # Returns all edges stemming from given node -- Except for self-edge (when edge distance == 0)
         for v in range(n):
             checkingEdge = edgeGraph[node.key][v]
-            print(checkingEdge.nodeA.key, checkingEdge.nodeB.key)
+            # print(checkingEdge.nodeA.key, checkingEdge.nodeB.key)
             # edge distance != 0
             if (checkingEdge.distance != 0 and (checkingEdge.nodeB not in exclusionList)):
-                print("Appended the Edge")
+                # print("Appended the Edge")
                 arr.append(checkingEdge)
             else:
-                print("Did not append")
+                pass
+                # print("Did not append")
         return arr
 
     def GreedyBound(self, nodes):

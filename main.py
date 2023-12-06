@@ -146,7 +146,6 @@ def draw_plot():
 
 
 def run():
-    global draw_plot
     nodes = readNodes("tsp_14.txt")
     new_nodes = readNewNodes("tsp_14.txt")
     labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n']
@@ -176,9 +175,9 @@ def run():
 
 
     nx.draw(g, pos=pos, with_labels=True)
-    # algo = Algorithms.Algorithms()
+    algo = Algorithms.Algorithms()
     #
-    # tmpVar = algo.Approximation(edge_graph, new_nodes, new_nodes[0])
+    tmpVar = algo.N_Approximation(edge_graph, new_nodes, new_nodes[0])
 
     # plt.savefig("filename.png")
 
