@@ -84,8 +84,6 @@ class Algorithms:
         # These nodes are actually node objects!
         shortestPath = []
 
-
-
         mst = self.MST_Prim(edgeGraph, nodes, start, len(nodes))
 
 
@@ -140,10 +138,20 @@ class Algorithms:
         mst = [startNode]
         untouchedNodes = nodes.copy()
 
+        # remove for hamiltonian cycle
+        untouchedNodes.remove(startNode)
 
         for i in range(n):
             if len(untouchedNodes) == 1:
                 mst += untouchedNodes # adds last node to mst
+                minEdge = self.findMinEdge(self.getEdgesFromGraph(edgeGraph, untouchedNodes[0], n, []), [])
+                nodeA = minEdge.nodeB
+                nodeB = minEdge.nodeA
+
+                # This is establishes parentage
+                nodeB.parent = nodeA
+                nodeA.children.append(nodeB)
+                untouchedNodes.remove(untouchedNodes[0])
                 break
 
 
@@ -166,14 +174,10 @@ class Algorithms:
                 untouchedNodes.remove(nodeB)
                 mst.append(nodeB)
 
-        # Node A -> Node B -> Node D -> Node C
-
-        # Node A -> Node B -> Node C -> Node D
-
         return mst
 
 
-    def findMinEdge(self, edges, exclusionList=None):
+    def findMinEdge(self, edges, exclusionList):
         # Find minimum cost edge
         minEdge = edges[0]
 
@@ -181,13 +185,14 @@ class Algorithms:
         for i in range(1, len(edges)):
 
             # if edge at index i is less than the current minimum edge then the min edge should be replaced
+
             if edges[i].distance < minEdge.distance and (edges[i].nodeB not in exclusionList):
                 minEdge = edges[i]
 
         return minEdge
 
     # Returns all edges stemming from given node -- Except for self-edge (when edge distance == 0)
-    def getEdgesFromGraph(self, edgeGraph, node, n, exclusionList=None):
+    def getEdgesFromGraph(self, edgeGraph, node, n, exclusionList):
         # arr of nodes that have an edge to the given node
         arr = []
 
