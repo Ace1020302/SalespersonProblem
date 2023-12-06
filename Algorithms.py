@@ -1,7 +1,9 @@
 # This is where we will do the algorithms
 import copy
+import sys
 from collections import deque
 
+from Edge import Edge
 from Node import Node
 
 
@@ -69,6 +71,7 @@ class Algorithms:
         # Create MST of G using Prims
         print("test")
         mst_walk = self.MST_Prim(edgeGraph, nodes, start, len(nodes))
+
         print(mst_walk)
 
         preorder_walk = list(set(mst_walk))
@@ -81,21 +84,26 @@ class Algorithms:
         # These nodes are actually node objects!
         shortestPath = []
 
-        node_dict = {node.key: node for node in nodes}
+
 
         mst = self.MST_Prim(edgeGraph, nodes, start, len(nodes))
-        for i in range(len(mst)-1):
-            nodeA, nodeB = mst[i], mst[i+1]
-            nodeB.parent = nodeA
-            nodeA.children.append(nodeB)
 
+
+        for node in mst:
+            print(f"Node - {node.key:<5} | # of Children - {len(node.children):<5} |  Children {node.getChildrenKeys()}")
+
+        for i in range(len(mst)):
+            print(mst[i].key, end=', ')
+
+        return shortestPath
+
+    def tmp(self, edgeGraph, mst, node_dict, shortestPath, start, nodes):
+        node_dict = {node.key: node for node in nodes}
 
         origin_key = start.key
         origin_node = node_dict[origin_key]
-
         queue = deque()
         self.preorder_walk(origin_node, queue)
-
         print("MST")
         for i in range(len(mst)):
             print(mst[i].key, end=', ')
@@ -104,25 +112,20 @@ class Algorithms:
         print("PREORDER")
         for i in range(len(queue)):
             print(queue[i].key, end=', ')
-
         last_node = queue.popleft()
         last_node.children.append(origin_node)
         origin_node.parent = last_node
-
         weight = 0
         for i in range(len(mst) - 1):
             nodeA, nodeB = mst[i], mst[i + 1]
             weight += edgeGraph[nodeA.key][nodeB.key].distance
-
         if not shortestPath or weight < shortestPath[-1]:
             shortestPath = [node for node in mst]
-
         print()
         print('=' * 50)
         print("SHORTEST PATH")
         for i in range(len(shortestPath)):
             print(shortestPath[i].key, end=', ')
-
         return shortestPath
 
     def preorder_walk(self, node, queue):
@@ -134,31 +137,43 @@ class Algorithms:
 
     def MST_Prim(self, edgeGraph, nodes, startNode, n):
         # mst arr
-        mst = []
-        tmpUnchecked = nodes.copy()
-        s = startNode
+        mst = [startNode]
+        untouchedNodes = nodes.copy()
+
+
         for i in range(n):
-            if len(tmpUnchecked) == 1:
-                mst += tmpUnchecked
+            if len(untouchedNodes) == 1:
+                mst += untouchedNodes # adds last node to mst
                 break
 
-            minEdge = self.findMinEdge(self.getEdgesFromGraph(edgeGraph, s, n, mst))
-            nextNode = minEdge.nodeB
-            mst.append(s)
-            # print(tmpUnchecked)
-            # if(s in tmpUnchecked):
-            #     print(s.key, " in tmpUnchecked. Will be removed.")
-            # else:
-            #     print(s.key, " in not tmpUnchecked. Will not be removed. Major Tom to ground control")
-            tmpUnchecked.remove(s)
-            s = nextNode
-            # print(s.key, " is new node")
-            # print("=" * 50)
 
+            # Finds min edge from the frontier
+            minEdge = None
+            for node in mst:
+                edgesOnNode = self.getEdgesFromGraph(edgeGraph, node, n, mst)
+                minEdgeOfNode = self.findMinEdge(edgesOnNode, mst)
+                if (minEdge is None) or (minEdgeOfNode.distance < minEdge.distance):
+                    minEdge = minEdgeOfNode
+
+            nodeA = minEdge.nodeA
+            nodeB = minEdge.nodeB
+
+            # This is establishes parentage
+            nodeB.parent = nodeA
+            nodeA.children.append(nodeB)
+
+            if nodeB in untouchedNodes:
+                untouchedNodes.remove(nodeB)
+                mst.append(nodeB)
+
+        # Node A -> Node B -> Node D -> Node C
+
+        # Node A -> Node B -> Node C -> Node D
 
         return mst
 
-    def findMinEdge(self, edges):
+
+    def findMinEdge(self, edges, exclusionList=None):
         # Find minimum cost edge
         minEdge = edges[0]
 
@@ -166,24 +181,24 @@ class Algorithms:
         for i in range(1, len(edges)):
 
             # if edge at index i is less than the current minimum edge then the min edge should be replaced
-            if edges[i].distance < minEdge.distance:
+            if edges[i].distance < minEdge.distance and (edges[i].nodeB not in exclusionList):
                 minEdge = edges[i]
 
         return minEdge
 
     # Returns all edges stemming from given node -- Except for self-edge (when edge distance == 0)
-    def getEdgesFromGraph(self, edgeGraph, node, n, exclusionList):
+    def getEdgesFromGraph(self, edgeGraph, node, n, exclusionList=None):
         # arr of nodes that have an edge to the given node
         arr = []
 
         # Returns all edges stemming from given node -- Except for self-edge (when edge distance == 0)
         for v in range(n):
-            checkingEdge = edgeGraph[node.key][v]
-            # print(checkingEdge.nodeA.key, checkingEdge.nodeB.key)
-            # edge distance != 0
-            if (checkingEdge.distance != 0 and (checkingEdge.nodeB not in exclusionList)):
+            edge = edgeGraph[node.key][v]
+
+            # edge distance != 0 avoids self edge
+            if (edge.distance != 0 and (edge.nodeB not in exclusionList)):
                 # print("Appended the Edge")
-                arr.append(checkingEdge)
+                arr.append(edge)
             else:
                 pass
                 # print("Did not append")

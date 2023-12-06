@@ -5,3 +5,9 @@ class Node:
         self.parent = parent
         self.coords = coords # tuple (x, y)
         self.children = []
+
+    def getChildrenKeys(self) -> []:
+        arr = []
+        for child in self.children:
+            arr.append(child.key)
+        return arr
