@@ -176,9 +176,9 @@ def run():
 
 
     nx.draw(g, pos=pos, with_labels=True)
-    algo = Algorithms.Algorithms()
-
-    tmpVar = algo.Approximation(edge_graph, new_nodes, new_nodes[0])
+    # algo = Algorithms.Algorithms()
+    #
+    # tmpVar = algo.Approximation(edge_graph, new_nodes, new_nodes[0])
 
     # plt.savefig("filename.png")
 
