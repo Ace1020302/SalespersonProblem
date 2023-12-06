@@ -101,10 +101,11 @@ class Algorithms:
         # for edge in mstEdges:
         #     print(f"{edge.nodeA.key:<2} - {edge.nodeB.key:<5}  |  dist: {edge.distance}")
 
-        self.minimum_weight_matching(mst, edgeGraph, oddDegreeNodes)
+        # After this runs, mstEdges should be the merged version of our MST and the min. weight matching graphs
+        self.minimum_weight_matching(mstEdges, edgeGraph, oddDegreeNodes)
 
-        for i in range(len(mst)):
-            print(mst[i].key, end=', ')
+        # Eulerian tour
+
 
         return shortestPath
 
@@ -125,11 +126,14 @@ class Algorithms:
 
             # u is the key of a node in the graph
             # u will be an odd-degree node that is not v
-            u = 1 # Meaningless here -> this will be a node key
+            u = 1  # Meaningless here -> this will be a node key
 
             # closest is index of a node in odd_vert array
             # closest will be the odd-degree node that IS closest to v
             closest = 0
+
+            # Giving this an initial value so it's in an expanded scope
+            edgeToAppend = G[0][0]
 
             # For every other unpaired odd-degree node, u from odd_vert
             for node in odd_vert:
@@ -141,14 +145,21 @@ class Algorithms:
                     length = G[v][u].distance
                     # closest is the NODE
                     closest = u
+                    edgeToAppend = G[v][u]
 
             # add the edges that connect them to the MST
-            MST.append( (v, closest, length) )
+            MST.append(edgeToAppend)
 
             # prune the node from odd_vert since it was paired with v
-            odd_vert.remove(closest)
 
-
+            # G[0][closest] is an edge such that nodeA = node with key of 0 and nodeB = node with key of closest
+            # for node in odd_vert:
+            #     print(f"{node.key}", end=', ')
+            # print()
+            nodeToRemove = edgeToAppend.nodeB
+            if len(odd_vert) > 0:
+                odd_vert.remove(nodeToRemove)
+                # print(f"removing {nodeToRemove.key}")
 
     def tmp(self, edgeGraph, mst, node_dict, shortestPath, start, nodes):
         node_dict = {node.key: node for node in nodes}
@@ -187,7 +198,6 @@ class Algorithms:
         for child in node.children:
             self.preorder_walk(child, queue)
 
-
     def MST_Prim(self, edgeGraph, nodes, startNode, n):
         # mst arr
         mst = [startNode]
@@ -198,7 +208,7 @@ class Algorithms:
 
         for i in range(n):
             if len(untouchedNodes) == 1:
-                mst += untouchedNodes # adds last node to mst
+                mst += untouchedNodes  # adds last node to mst
                 minEdge = self.findMinEdge(self.getEdgesFromGraph(edgeGraph, untouchedNodes[0], n, []), [])
                 nodeA = minEdge.nodeB
                 nodeB = minEdge.nodeA
@@ -208,7 +218,6 @@ class Algorithms:
                 nodeA.children.append(nodeB)
                 untouchedNodes.remove(untouchedNodes[0])
                 break
-
 
             # Finds min edge from the frontier
             minEdge = None
@@ -230,7 +239,6 @@ class Algorithms:
                 mst.append(nodeB)
 
         return mst
-
 
     def findMinEdge(self, edges, exclusionList):
         # Find minimum cost edge
