@@ -105,7 +105,7 @@ class Algorithms:
         self.minimum_weight_matching(mstEdges, edgeGraph, oddDegreeNodes)
 
         # Eulerian tour
-
+        self.find_eulerian_tour(mstEdges, edgeGraph)
 
         return shortestPath
 
@@ -161,6 +161,52 @@ class Algorithms:
                 odd_vert.remove(nodeToRemove)
                 # print(f"removing {nodeToRemove.key}")
 
+    def find_eulerian_tour(self, MatchedMSTree, G):
+        # find neigbours
+        neighbours = {}
+        for edge in MatchedMSTree:
+            if edge.nodeA not in neighbours:
+                neighbours[edge.nodeA] = []
+
+            if edge.nodeB not in neighbours:
+                neighbours[edge.nodeB] = []
+
+            neighbours[edge.nodeA].append(edge.nodeB)
+            neighbours[edge.nodeB].append(edge.nodeA)
+
+        # print("Neighbours: ", neighbours)
+
+        # finds the hamiltonian circuit
+        start_vertex = MatchedMSTree[0][0]
+        EP = [neighbours[start_vertex][0]]
+
+        while len(MatchedMSTree) > 0:
+            for i, v in enumerate(EP):
+                if len(neighbours[v]) > 0:
+                    break
+
+            while len(neighbours[v]) > 0:
+                w = neighbours[v][0]
+
+                Algorithms.remove_edge_from_matchedMST((MatchedMSTree, v, w))
+
+                del neighbours[v][(neighbours[v].index(w))]
+                del neighbours[w][(neighbours[w].index(v))]
+
+                i += 1
+                EP.insert(i, w)
+
+                v = w
+
+        return EP
+
+    def remove_edge_from_matchedMST(MatchedMST, v1, v2):
+
+        for i, item in enumerate(MatchedMST):
+            if (item[0] == v2 and item[1] == v1) or (item[0] == v1 and item[1] == v2):
+                del MatchedMST[i]
+
+        return MatchedMST
     def tmp(self, edgeGraph, mst, node_dict, shortestPath, start, nodes):
         node_dict = {node.key: node for node in nodes}
 
