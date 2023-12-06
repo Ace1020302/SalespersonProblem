@@ -88,9 +88,18 @@ class Algorithms:
 
         oddDegreeNodes = []
         for node in mst:
-            print(f"Node - {node.key:<5} | # of Children - {len(node.children):<5} |  Children {node.getChildrenKeys()}")
+            # print(f"Node - {node.key:<5} | # of Children - {len(node.children):<5} |  Children {node.getChildrenKeys()}")
             if len(node.children) % 2 != 0:
                 oddDegreeNodes.append(node)
+
+        mstEdges = []
+        for i in range(len(nodes)):
+            for child in nodes[i].children:
+                edge = edgeGraph[i][child.key]
+                mstEdges.append(edge)
+
+        # for edge in mstEdges:
+        #     print(f"{edge.nodeA.key:<2} - {edge.nodeB.key:<5}  |  dist: {edge.distance}")
 
         self.minimum_weight_matching(mst, edgeGraph, oddDegreeNodes)
 
@@ -107,22 +116,26 @@ class Algorithms:
         # While there are still unpaired odd-degree nodes...
         while odd_vert:
             # v is a random odd-degree node
-            v = odd_vert.pop()
+            v = odd_vert.pop().key
             # The length to the nearest OTHER odd-degree node (u) is not yet found
+            # inf = infinity
             length = float("inf")
 
             # Other variable declarations with sentinels
 
+            # u is the key of a node in the graph
             # u will be an odd-degree node that is not v
-            u = 1
+            u = 1 # Meaningless here -> this will be a node key
+
+            # closest is index of a node in odd_vert array
             # closest will be the odd-degree node that IS closest to v
             closest = 0
 
             # For every other unpaired odd-degree node, u from odd_vert
-            for u in odd_vert:
+            for node in odd_vert:
+                u = node.key
 
                 # Ensure that v is not u and get the edge distances between them (from complete graph)
-
                 if v != u and G[v][u].distance < length:
                     # length is the DISTANCE
                     length = G[v][u].distance
