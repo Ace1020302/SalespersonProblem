@@ -86,14 +86,56 @@ class Algorithms:
 
         mst = self.MST_Prim(edgeGraph, nodes, start, len(nodes))
 
-
+        oddDegreeNodes = []
         for node in mst:
             print(f"Node - {node.key:<5} | # of Children - {len(node.children):<5} |  Children {node.getChildrenKeys()}")
+            if len(node.children) % 2 != 0:
+                oddDegreeNodes.append(node)
+
+        self.minimum_weight_matching(mst, edgeGraph, oddDegreeNodes)
 
         for i in range(len(mst)):
             print(mst[i].key, end=', ')
 
         return shortestPath
+
+    # https: // github.com / Retsediv / ChristofidesAlgorithm / blob / master / christofides.py
+    def minimum_weight_matching(self, MST, G, odd_vert):
+        import random
+        random.shuffle(odd_vert)
+
+        # While there are still unpaired odd-degree nodes...
+        while odd_vert:
+            # v is a random odd-degree node
+            v = odd_vert.pop()
+            # The length to the nearest OTHER odd-degree node (u) is not yet found
+            length = float("inf")
+
+            # Other variable declarations with sentinels
+
+            # u will be an odd-degree node that is not v
+            u = 1
+            # closest will be the odd-degree node that IS closest to v
+            closest = 0
+
+            # For every other unpaired odd-degree node, u from odd_vert
+            for u in odd_vert:
+
+                # Ensure that v is not u and get the edge distances between them (from complete graph)
+
+                if v != u and G[v][u].distance < length:
+                    # length is the DISTANCE
+                    length = G[v][u].distance
+                    # closest is the NODE
+                    closest = u
+
+            # add the edges that connect them to the MST
+            MST.append( (v, closest, length) )
+
+            # prune the node from odd_vert since it was paired with v
+            odd_vert.remove(closest)
+
+
 
     def tmp(self, edgeGraph, mst, node_dict, shortestPath, start, nodes):
         node_dict = {node.key: node for node in nodes}
