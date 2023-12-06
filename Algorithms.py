@@ -40,18 +40,18 @@ class Algorithms:
                 newDist = origDist + self.calculate_path_cost(arr, graph)
                 print(f'Distance: {newDist}')
                 time.sleep(5)
-                if dist > newDist:
+                if dist > newDist: #Checking if we have a new smallest distance and re-initializing
                     dist = newDist
                     print(f'New Shortest Distance: {dist}')
                 print(arr)
             else:
-                for i in range(l, r):
+                for i in range(l, r): #This whole block swaps around the nodes so that there is one new permutation each run
                     arr[l], arr[i] = arr[i], arr[l]
                     stack.append((list(arr), l + 1, r))
                     arr[l], arr[i] = arr[i], arr[l]
         finalToOrigin = math.dist(arr[r], [0, 0, 0])
         print(f'Final Node To Origin: {arr[r]} + {[0, 0]} = {finalToOrigin}')
-        return time.time() - start, dist + finalToOrigin
+        return time.time() - start, dist + finalToOrigin #returns final total distance + the distance from the last node to origin
 
     def OptimialNaive(self, nodes):
         pass
