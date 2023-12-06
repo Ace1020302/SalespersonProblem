@@ -96,14 +96,32 @@ class Algorithms:
         queue = deque()
         self.preorder_walk(origin_node, queue)
 
+        print("MST")
         for i in range(len(mst)):
             print(mst[i].key, end=', ')
         print()
         print('=' * 50)
+        print("PREORDER")
         for i in range(len(queue)):
-            print(queue.popleft().key, end=', ')
+            print(queue[i].key, end=', ')
 
-        # The missing part of the approx algo
+        last_node = queue.popleft()
+        last_node.children.append(origin_node)
+        origin_node.parent = last_node
+
+        weight = 0
+        for i in range(len(mst) - 1):
+            nodeA, nodeB = mst[i], mst[i + 1]
+            weight += edgeGraph[nodeA.key][nodeB.key].distance
+
+        if not shortestPath or weight < shortestPath[-1]:
+            shortestPath = [node for node in mst]
+
+        print()
+        print('=' * 50)
+        print("SHORTEST PATH")
+        for i in range(len(shortestPath)):
+            print(shortestPath[i].key, end=', ')
 
         return shortestPath
 

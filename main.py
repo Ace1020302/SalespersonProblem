@@ -174,7 +174,7 @@ def run():
     pos = nx.spring_layout(g, seed=3113794652)
 
 
-    nx.draw(g, pos=pos, with_labels=True)
+    # nx.draw(g, pos=pos, with_labels=True)
     algo = Algorithms.Algorithms()
     #
     tmpVar = algo.N_Approximation(edge_graph, new_nodes, new_nodes[0])
