@@ -54,6 +54,9 @@ class Algorithms:
         return time.time() - start, dist + finalToOrigin
 
     def OptimialNaive(self, nodes):
+        # https://www.geeksforgeeks.org/parallel-processing-in-python/
+        # import multiprocessing
+        # import timer
         pass
 
     def Approximation(self, edge_graph, nodes, start):
