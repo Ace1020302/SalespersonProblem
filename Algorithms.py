@@ -127,7 +127,3 @@ class Algorithms:
             else:
                 arr.append(nodes[i])
         return arr
-
-
-    def GreedyBound(self, nodes):
-        pass
