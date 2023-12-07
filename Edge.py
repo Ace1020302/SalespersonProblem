@@ -1,4 +1,10 @@
-
+#
+#   File:       Edge.py
+#   Project:    Traveling Salesperson
+#   Date:       12.07.23
+#   Group:      Algo-Holics (Phillip, Jason, Travis, Noah, Aaron)
+#   Purpose:    Models our edges
+#
 class Edge:
     def __init__(self, nodeA, nodeB, distance=0):
         self.nodeA = nodeA

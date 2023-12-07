@@ -1,30 +1,28 @@
+#
+#   File:       main.py
+#   Project:    Traveling Salesperson
+#   Date:       12.07.23
+#   Group:      Algo-Holics (Phillip, Jason, Travis, Noah, Aaron)
+#   Purpose:    Driver for our program. Also Pre-computes the graph.
+#
 import math
-import webbrowser
+
 from tabulate import tabulate
 import networkx as nx
-import numpy
-from pyvis.network import Network
+
 import matplotlib.pyplot as plt
-
 import Algorithms
-
-# Text boxes
-# Phillip:  This is where we type to one another during live share
-# Levi:
-# Travis:
-# Noah:
-# Jason:
-import AlgorithmsTMP
 from Edge import Edge
-from Node import Node
 
 
+# Separates our print statements out
 def visualSeparator():
     print('===' * 100)
     print('===' * 100)
     print('===' * 100)
 
 
+# adds in nodes from file, with the possibility of skipping line 1
 def readNodes(fileName, skipFirstLine=True):
     arr = []
 
@@ -46,30 +44,7 @@ def readNodes(fileName, skipFirstLine=True):
     return arr
 
 
-def readNewNodes(fileName, skipFirstLine=True):
-    arr = []
-
-    file = open(fileName)
-
-    # Skips first line if it's not a point
-    if skipFirstLine:
-        file.readline()
-
-    key = 0
-    for line in file:
-        a, b = line.split()
-        a = int(a)
-        b = int(b)
-        node = Node(None, None, None)
-        node.coords = (a, b)
-        node.key = key  # Index needed to access element in our graph
-        arr.append(node)
-        key += 1
-
-    file.close()
-    return arr
-
-
+# gets distance between two nodes
 def getDist(a, b):
     # Message to show getDist step in compute_graph
     # print(f"getDist :: a = {a} | b = {b}")
@@ -77,6 +52,7 @@ def getDist(a, b):
     return math.dist(a, b)
 
 
+# calculates each node's distance in an adjancey matrix
 def compute_graph(nodes):
     # Store the graph with the distances. This is really an adjacency matrix (2D array)
     # Set up adjacency matrix dimensions, square matrix len(nodes) by len(nodes)
@@ -103,6 +79,7 @@ def compute_graph(nodes):
     return adj_mat
 
 
+# prints out the graph in a fancy format
 def printGraph(graph, labels):
     if len(graph[0]) > len(labels):
         print("Can't print table, not enough labels")
@@ -116,6 +93,7 @@ def printGraph(graph, labels):
         graph[i].remove(labels[i])
 
 
+# computes the graph, but with the edge data
 def compute_edge_graph(nodes):
     # Store the graph with the distances. This is really an adjacency matrix (2D array)
     # Set up adjacency matrix dimensions, square matrix len(nodes) by len(nodes)
@@ -143,19 +121,18 @@ def compute_edge_graph(nodes):
     return adj_mat
 
 
+# Shows the plot in sciview (external window or in ide depending on ide)
 def draw_plot():
     plt.show()
 
-
+# Runs our program
 def run():
     nodes = readNodes("tsp_14.txt")
-    new_nodes = readNewNodes("tsp_14.txt")
     labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o']
 
-    # Testing Purposes Only
     g = nx.Graph()
     graph = (compute_graph(nodes))
-    edge_graph = compute_edge_graph(new_nodes)
+    # edge_graph = compute_edge_graph(new_nodes)
 
     # Add Nodes to network
     for i in range(len(nodes)):
@@ -167,7 +144,6 @@ def run():
         for j in range(len(graph)):
             if (i == j):
                 continue
-            # print(f"Edge Weight to be added: From {labels[i]} to {labels[j]} --- {graph[i][j]}, {type(graph[i][j])}")
             g.add_edge(labels[i], labels[j], weight=graph[i][j])
 
     printGraph(graph, labels)
@@ -187,19 +163,18 @@ def run():
             tmpVar = algo.optimizer(nodes)
             pass
         elif option == 3:
-            algo = AlgorithmsTMP.Algorithms()
+            algo = Algorithms.Algorithms()
             tmpVar = algo.N_Approximation(g)
         print()
         option = input("0: Quit\n1: Brute\n2: Optimal Brute\n3: Approximation\nInput: ")
         option = int(option)
         print()
 
+    print("Goodbye!!! We will hopefully see you next semester Mr. Harrison.")
 
-    print("goodbye")
+    # Draws Network of nodes and saves the image
     # nx.draw(g, pos=pos, with_labels=True)
-
-    # algo.optimizer(nodes)
-    # plt.savefig("filename.png")
+    # plt.savefig("pictureOfGraph.png")
 
 
 def find_shortest_path(g, graph, labels):
@@ -224,7 +199,6 @@ def __init__():
     run()
 
 
-#
+# main statement, but we also have a run statement and method to better represent driver functionality
 if __name__ == "__main__":
     run()
-    # draw_plot()
