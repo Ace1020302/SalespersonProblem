@@ -1,0 +1,89 @@
+Index: Algorithms.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># This is where we will do the algorithms\n\nclass Algorithms:\n    def Naive(self):\n        pass\n\n    def OptimialNaive(self):\n        # The shortest Path should be at least bigger than greedy.\n        shortestPath = self.GreedyBound()\n\n        pass\n\n    def Approximation(self):\n        pass\n\n    def GreedyBound(self):\n        pass
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Algorithms.py b/Algorithms.py
+--- a/Algorithms.py	(revision d8ec2b2af2b554eeba17a2ede532d6504d2ae4cf)
++++ b/Algorithms.py	(date 1701707687313)
+@@ -1,7 +1,10 @@
+ # This is where we will do the algorithms
+ 
+ class Algorithms:
+-    def Naive(self):
++    def Naive(self, graph, s):
++        # This will be a sorted path of coordinates (tuples -> (x,y))
++        shortestPath = []
++
+         pass
+ 
+     def OptimialNaive(self):
+@@ -14,4 +17,4 @@
+         pass
+ 
+     def GreedyBound(self):
+-        pass
+\ No newline at end of file
++        pass
+Index: main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import math\nimport webbrowser\nfrom tabulate import tabulate\nimport networkx as nx\nimport numpy\nfrom pyvis.network import Network\nimport matplotlib.pyplot as plt\n\n\n# Text boxes\n# Phillip:  This is where we type to one another during live share\n# Levi:\n# Travis:\n# Noah:\n# Jason:\n\ndef visualSeparator():\n    print('===' * 100)\n    print('===' * 100)\n    print('===' * 100)\n\n\ndef readNodes(fileName, skipFirstLine=True):\n    arr = []\n\n    file = open(fileName)\n\n    # Skips first line if it's not a point\n    if (skipFirstLine):\n        file.readline()\n\n    for line in file:\n        a, b = line.split()\n        a = int(a)\n        b = int(b)\n        arr.append((a, b))\n\n    file.close()\n    return arr\n\n\ndef getDist(a, b):\n    # Message to show getDist step in compute_graph\n    print(f\"getDist :: a = {a} | b = {b}\")\n    # grab one of the y's and one of the x's\n    return math.dist(a, b)\n\n\ndef compute_graph(nodes):\n    # Store the graph with the distances. This is really an adjacency matrix (2D array)\n    # Set up adjacency matrix dimensions, square matrix len(nodes) by len(nodes)\n    nodeCount = len(nodes)\n    # Initialize with 0 for sentinel\n    adj_mat = [[0 for i in range(nodeCount)] for j in range(nodeCount)]\n    # method 2 1st approach\n    # Store nodeCount instead of recalculating len(nodes) every loop\n\n    for i in range(nodeCount):\n        for j in range(nodeCount):\n            # Don't calculate repeated distances\n            if (adj_mat[i][j] != 0):\n                continue\n            # if (i == j):\n            #   continue\n            # Calculate value once for each node.\n            distance = getDist(nodes[i], nodes[j])\n            adj_mat[i][j] = distance\n            adj_mat[j][i] = distance\n            # Message to clarify distance calculation per-step after getDist\n            print(f\"compute_graph :: Distance between Node {i} {nodes[i]} and Node {j} {nodes[j]} = {adj_mat[i][j]}\")\n            print('--' * 100)\n    return adj_mat\n\n\ndef printGraph(graph, labels):\n    if len(graph[0]) > len(labels):\n        print(\"Can't print table, not enough labels\")\n        return\n    for i in range(len(labels)):\n        graph[i].insert(0, labels[i])\n    labels.insert(0, '')\n    print(tabulate(graph, headers=labels, tablefmt=\"fancy_grid\", floatfmt=\".3f\", numalign=\"center\"))\n    labels.remove('')\n    for i in range(len(labels)):\n        graph[i].remove(labels[i])\n\n\ndef draw_plot():\n    plt.show()\n\n\ndef run():\n    global draw_plot\n    nodes = readNodes(\"tsp_14.txt\")\n    labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n']\n    # Testing Purposes Only\n    # For pyvis\n    net = Network()\n    # For nx\n    g = nx.Graph()\n    # pos = nx.spring_layout()\n    graph = (compute_graph(nodes))\n    print('===' * 100)\n    print('===' * 100)\n    print('===' * 100)\n    # Add Nodes to network\n    for i in range(len(nodes)):\n        g.add_node(labels[i])\n    # Separators\n    visualSeparator()\n    # Add Our Weights\n    # for i in range(len(graph)):\n    #     for j in range(len(graph)):\n    #         print(f\"Edge Weight to be added: {graph[i][j]}, {type(graph[i][j])}\")\n    #         g.add_edge(graph[i], graph[j], weight=graph[i][j])\n    for i in range(len(graph)):\n        for j in range(len(graph)):\n            if (i == j):\n                continue\n            print(f\"Edge Weight to be added: From {labels[i]} to {labels[j]} --- {graph[i][j]}, {type(graph[i][j])}\")\n            g.add_edge(labels[i], labels[j], weight=graph[i][j])\n    visualSeparator()\n    printGraph(graph, labels)\n    # for i in range(len(graph)):\n    #     for j in range(len(graph)):\n    #         print(\"{0}\".format(graph[i][j]), end='\\t')\n    #     print()\n    #     print()\n    visualSeparator()\n    # Compute the shortest path in g from node a to node b\n    shortPath = nx.dijkstra_path(g, 'g', 'd')\n    totalDistance = 0\n    for i in range(len(shortPath)):\n        if i == 0:\n            continue\n        # label idx of to find equivalent adj_mat position\n        x = labels.index(shortPath[i - 1])\n        y = labels.index(shortPath[i])\n\n        # Get the node with that label and look up the distance between the two nodes (adj_mat)\n        print(f\"Distance from {shortPath[i - 1]} to {shortPath[i]}: {graph[x][y]}\")\n        totalDistance += graph[x][y]\n\n        # print\n        print(totalDistance)\n    # net.addNode(\"A\")\n    # net.addNode(\"B\")\n    #\n    #\n    # net.addEdge(\"A\", \"B\", 10)\n    # net.addEdge(\"B\", \"A\", 5)\n    #\n    # g = nx.Graph()\n    pos = nx.spring_layout(g, seed=3113794652)\n    #\n    # g.add_edge(1, 2)\n    # g.add_edge(2, 3)\n    # g.add_edge(3, 4)\n    # g.add_edge(1, 4)\n    # g.add_edge(1, 5)\n    # g.add_edge(3, 3)\n    # g.add_edge(6, 4)\n    #\n    #\n    nx.draw(g, pos=pos, with_labels=True)\n\n    # nx.draw_networkx_edge_labels(g, pos, edge_labels=nx.get_edge_attributes(g,'weight'))\n    #\n    #\n    # net.from_nx(g)\n\n    # net.show(\"nx.html\", notebook=False)\n    #\n    #\n    # webbrowser.open('http://localhost:63342/TravelingSalesperson/nx.html')\n    # plt.savefig(\"filename.png\")\n\n\ndef __init__():\n    run()\n\n#\nif __name__ == \"__main__\":\n    run()\n    draw_plot()\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main.py b/main.py
+--- a/main.py	(revision d8ec2b2af2b554eeba17a2ede532d6504d2ae4cf)
++++ b/main.py	(date 1701708100143)
+@@ -103,23 +103,29 @@
+     print('===' * 100)
+     print('===' * 100)
+     print('===' * 100)
++
+     # Add Nodes to network
+     for i in range(len(nodes)):
+         g.add_node(labels[i])
++
+     # Separators
+     visualSeparator()
++
+     # Add Our Weights
+     # for i in range(len(graph)):
+     #     for j in range(len(graph)):
+     #         print(f"Edge Weight to be added: {graph[i][j]}, {type(graph[i][j])}")
+     #         g.add_edge(graph[i], graph[j], weight=graph[i][j])
++
+     for i in range(len(graph)):
+         for j in range(len(graph)):
+             if (i == j):
+                 continue
+             print(f"Edge Weight to be added: From {labels[i]} to {labels[j]} --- {graph[i][j]}, {type(graph[i][j])}")
+             g.add_edge(labels[i], labels[j], weight=graph[i][j])
++
+     visualSeparator()
++
+     printGraph(graph, labels)
+     # for i in range(len(graph)):
+     #     for j in range(len(graph)):
+@@ -127,9 +133,11 @@
+     #     print()
+     #     print()
+     visualSeparator()
++
+     # Compute the shortest path in g from node a to node b
+     shortPath = nx.dijkstra_path(g, 'g', 'd')
+     totalDistance = 0
++
+     for i in range(len(shortPath)):
+         if i == 0:
+             continue
+@@ -143,6 +151,7 @@
+ 
+         # print
+         print(totalDistance)
++
+     # net.addNode("A")
+     # net.addNode("B")
+     #

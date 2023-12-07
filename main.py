@@ -177,7 +177,7 @@ def run():
     option = input("0: Quit\n1: Brute\n2: Optimal Brute\n3: Approximation\nInput: ")
     option = int(option)
     while option != 0:
-        # print(option)
+        # print(option)11
         if option == 1:
             algo = Algorithms.Algorithms()
             tmpVar = algo.Naive(graph, nodes)
