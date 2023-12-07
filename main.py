@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 
 import Algorithms
 
-
 # Text boxes
 # Phillip:  This is where we type to one another during live share
 # Levi:
@@ -46,13 +45,14 @@ def readNodes(fileName, skipFirstLine=True):
     file.close()
     return arr
 
+
 def readNewNodes(fileName, skipFirstLine=True):
     arr = []
 
     file = open(fileName)
 
     # Skips first line if it's not a point
-    if (skipFirstLine):
+    if skipFirstLine:
         file.readline()
 
     key = 0
@@ -62,12 +62,13 @@ def readNewNodes(fileName, skipFirstLine=True):
         b = int(b)
         node = Node(None, None, None)
         node.coords = (a, b)
-        node.key = key # Index needed to access element in our graph
+        node.key = key  # Index needed to access element in our graph
         arr.append(node)
         key += 1
 
     file.close()
     return arr
+
 
 def getDist(a, b):
     # Message to show getDist step in compute_graph
@@ -137,7 +138,7 @@ def compute_edge_graph(nodes):
             adj_mat[j][i] = mirroredEdge
             # Message to clarify distance calculation per-step after getDist
             # print(
-                # f"compute_graph :: Distance between Node {i} {nodes[i]} and Node {j} {nodes[j]} = {adj_mat[i][j]}")
+            # f"compute_graph :: Distance between Node {i} {nodes[i]} and Node {j} {nodes[j]} = {adj_mat[i][j]}")
             # print('--' * 100)
     return adj_mat
 
@@ -149,7 +150,7 @@ def draw_plot():
 def run():
     nodes = readNodes("tsp_14.txt")
     new_nodes = readNewNodes("tsp_14.txt")
-    labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n']
+    labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o']
     # Testing Purposes Only
 
     g = nx.Graph()
@@ -167,20 +168,19 @@ def run():
         for j in range(len(graph)):
             if (i == j):
                 continue
-            #print(f"Edge Weight to be added: From {labels[i]} to {labels[j]} --- {graph[i][j]}, {type(graph[i][j])}")
+            # print(f"Edge Weight to be added: From {labels[i]} to {labels[j]} --- {graph[i][j]}, {type(graph[i][j])}")
             g.add_edge(labels[i], labels[j], weight=graph[i][j])
 
     printGraph(graph, labels)
 
     pos = nx.spring_layout(g, seed=3113794652)
 
-
-    # nx.draw(g, pos=pos, with_labels=True)
+    nx.draw(g, pos=pos, with_labels=True)
     algo = AlgorithmsTMP.Algorithms()
     #
     tmpVar = algo.N_Approximation(g)
     # algo.optimizer(nodes)
-    # plt.savefig("filename.png")
+    plt.savefig("filename.png")
 
 
 def find_shortest_path(g, graph, labels):
@@ -203,6 +203,7 @@ def find_shortest_path(g, graph, labels):
 
 def __init__():
     run()
+
 
 #
 if __name__ == "__main__":
