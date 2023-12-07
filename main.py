@@ -172,15 +172,28 @@ def run():
 
     printGraph(graph, labels)
 
-
     pos = nx.spring_layout(g, seed=3113794652)
 
-    nx.draw(g, pos=pos, with_labels=True)
-    algo = AlgorithmsTMP.Algorithms()
-    #
-    tmpVar = algo.N_Approximation(g)
+    option = input("0: Quit\n1: Brute\n2: Optimal Brute\n3: Approximation\nInput: ")
+    option = int(option)
+    while option != 0:
+        # print(option)
+        if option == 1:
+            pass
+        elif option == 2:
+            pass
+        elif option == 3:
+            algo = AlgorithmsTMP.Algorithms()
+            tmpVar = algo.N_Approximation(g)
+        option = input("0: Quit\n1: Brute\n2: Optimal Brute\n3: Approximation\nInput: ")
+        option = int(option)
+
+
+    print("goodbye")
+    # nx.draw(g, pos=pos, with_labels=True)
+
     # algo.optimizer(nodes)
-    plt.savefig("filename.png")
+    # plt.savefig("filename.png")
 
 
 def find_shortest_path(g, graph, labels):
