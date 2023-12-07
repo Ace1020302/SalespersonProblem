@@ -98,18 +98,24 @@ class Algorithms:
                 edge = edgeGraph[i][child.key]
                 mstEdges.append(edge)
 
-        # for edge in mstEdges:
-        #     print(f"{edge.nodeA.key:<2} - {edge.nodeB.key:<5}  |  dist: {edge.distance}")
+        print("MST GRAPH")
+
+
+        for edge in mstEdges:
+            print(f"edge from {edge.nodeA.key} to {edge.nodeB.key}")
 
         # After this runs, mstEdges should be the merged version of our MST and the min. weight matching graphs
+        print("MIN WEIGHT GRAPH")
         self.minimum_weight_matching(mstEdges, edgeGraph, oddDegreeNodes)
 
         # Eulerian tour
-        self.find_eulerian_tour(mstEdges, edgeGraph)
+        ep = self.find_eulerian_tour(mstEdges, edgeGraph)
+
+
 
         return shortestPath
 
-    # https: // github.com / Retsediv / ChristofidesAlgorithm / blob / master / christofides.py
+    # https://github.com/Retsediv/ChristofidesAlgorithm/blob/master/christofides.py
     def minimum_weight_matching(self, MST, G, odd_vert):
         import random
         random.shuffle(odd_vert)
@@ -136,6 +142,7 @@ class Algorithms:
             edgeToAppend = G[0][0]
 
             # For every other unpaired odd-degree node, u from odd_vert
+
             for node in odd_vert:
                 u = node.key
 
@@ -147,8 +154,13 @@ class Algorithms:
                     closest = u
                     edgeToAppend = G[v][u]
 
+
             # add the edges that connect them to the MST
-            MST.append(edgeToAppend)
+            if(edgeToAppend.nodeA is edgeToAppend.nodeB):
+                pass
+            else:
+                print(f"edge from {edgeToAppend.nodeA.key} to {edgeToAppend.nodeB.key}")
+                MST.append(edgeToAppend)
 
             # prune the node from odd_vert since it was paired with v
 
@@ -162,51 +174,61 @@ class Algorithms:
                 # print(f"removing {nodeToRemove.key}")
 
     def find_eulerian_tour(self, MatchedMSTree, G):
-        # find neigbours
-        neighbours = {}
+
+        print("=" * 100)
         for edge in MatchedMSTree:
-            if edge.nodeA not in neighbours:
-                neighbours[edge.nodeA] = []
+            print(f"Edge From {edge.nodeA.key} to {edge.nodeB.key}")
 
-            if edge.nodeB not in neighbours:
-                neighbours[edge.nodeB] = []
+        # find neighbours
+        # Node, List of Nodes
+        neighbours = {}
 
-            neighbours[edge.nodeA].append(edge.nodeB)
-            neighbours[edge.nodeB].append(edge.nodeA)
+        for edge in MatchedMSTree:
+            nodeA = edge.nodeA
+            nodeB = edge.nodeB
 
-        # print("Neighbours: ", neighbours)
+            # Skip if same edge self neighbours
+            if(nodeA == nodeB):
+                continue
 
-        # finds the hamiltonian circuit
-        start_vertex = MatchedMSTree[0][0]
-        EP = [neighbours[start_vertex][0]]
+            # Initialize it if it hasn't been already
+            if nodeA not in neighbours.keys():
+                neighbours[nodeA] = []
+            if nodeB not in neighbours.keys():
+                neighbours[nodeB] = []
 
-        while len(MatchedMSTree) > 0:
-            for i, v in enumerate(EP):
-                if len(neighbours[v]) > 0:
-                    break
+            # If there is an edge connecting to points, we want both points to be in each other's neighbors
+            if(nodeB not in neighbours[nodeA]):
+                neighbours[nodeA].append(nodeB)
 
-            while len(neighbours[v]) > 0:
-                w = neighbours[v][0]
+            if(nodeA not in neighbours[nodeB]):
+                neighbours[nodeB].append(nodeA)
 
-                Algorithms.remove_edge_from_matchedMST((MatchedMSTree, v, w))
 
-                del neighbours[v][(neighbours[v].index(w))]
-                del neighbours[w][(neighbours[w].index(v))]
 
-                i += 1
-                EP.insert(i, w)
 
-                v = w
 
-        return EP
 
-    def remove_edge_from_matchedMST(MatchedMST, v1, v2):
+        print("Neighbours: ")
+        for nodePar in neighbours.keys():
+            listOfStuff = []
+            for node in neighbours[nodePar]:
+                listOfStuff.append(node.key)
+            print(f"{nodePar.key:<3} | {listOfStuff}")
 
-        for i, item in enumerate(MatchedMST):
-            if (item[0] == v2 and item[1] == v1) or (item[0] == v1 and item[1] == v2):
-                del MatchedMST[i]
+
+
+        # return EP
+
+    def remove_edge_from_matchedMST(self, MatchedMST, v1, v2):
+
+        for i, edge in enumerate(MatchedMST):
+            # print(type(edge))
+            if (edge.nodeA.key == v2 and edge.nodeB.key == v1) or (edge.nodeA.key == v1 and edge.nodeB.key == v2):
+                MatchedMST.remove(edge)
 
         return MatchedMST
+
     def tmp(self, edgeGraph, mst, node_dict, shortestPath, start, nodes):
         node_dict = {node.key: node for node in nodes}
 
