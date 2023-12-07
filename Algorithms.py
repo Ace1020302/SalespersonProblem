@@ -1,17 +1,23 @@
-# This is where we will do the algorithms
+#
+#   File:       Algorithms.py
+#   Project:    Traveling Salesperson
+#   Date:       12.07.23
+#   Group:      Algo-Holics (Phillip, Jason, Travis, Noah, Aaron)
+#   Purpose:    Class to contain our algorithms
+#
 from collections import deque
 import math
 from itertools import permutations
 import time
 import multiprocessing
 from main import readNodes
-from Edge import Edge
-from Node import Node
 import networkx as nx
 
 class Algorithms:
     #Naive Brute Force Algo
     def Naive(self, graph, nodes):
+        print(self.permute_iterative(nodes, 0, 10, graph, 1000000))
+        print('Naive Brute Force', file=open('Results.txt', 'a'))
         print(self.permute_iterative(nodes, 0, 10, graph, 1000000), file=open('Results.txt', 'a'))  # 10 nodes hit
         pass
 
@@ -78,9 +84,9 @@ class Algorithms:
         start = time.time()
         with multiprocessing.Pool() as pool:
             all_paths = pool.map(self.permute_optimized, nodes)  # Allocates processes to every processor core in PC, returns a list of all shortest paths
-
-        print(f'Shortest Distance: {min(all_paths)}', file=open('Results.txt', 'a'))  # Takes the shortest of the shortest paths
-        print(time.time() - start, file=open('Results', 'a'))
+        print(f'Shortest Distance: {min(all_paths)}, Time: {time.time() - start}')
+        print('Optimal Brute', file=open('Results.txt', 'a'))
+        print(f'Shortest Distance: {min(all_paths)}, Time: {time.time() - start}', file=open('Results.txt', 'a'))  # Takes the shortest of the shortest paths
 
     # MST and standard pre-order walk approach without any external library
     # prints the cost of the approximated path
@@ -130,8 +136,6 @@ class Algorithms:
         matchingGraph.add_edges_from(mst.edges())
         matchingGraph.add_edges_from(matching)
 
-        # print(matchingGraph)
-
         # Source node is the node the circuit starts and loops back to. For this case, we leave it at 'd'
         # Realistically, we could set this as the first node of the network graph
         sourceNode = "d"
@@ -150,7 +154,9 @@ class Algorithms:
         # tour_edges = [(initTour[i-1], initTour[i]) for i in ]
         u = 0
         v = 0
-        print(newTour)
+        print(f'NewTour: {newTour}')
+        print('Approximation', file=open('Results.txt', 'a'))
+        print(f'NewTour: {newTour}', file=open('Results.txt', 'a'))
         sum = 0
         for i in range(1, len(newTour)):
             u = newTour[i - 1]
@@ -159,7 +165,8 @@ class Algorithms:
 
         # Total Distance: 64952.93 from Harrison | 64938.95920682345 from our approx
         # We average in a range of 4,000 margin of error depending on the source node
-        print(sum)
+        print(f'Sum: {sum}')
+        print(f'Sum: {sum}', file=open('Results.txt', 'a'))
         return shortestPath
 
     # MST and Min-Weight-Matching approach without any external library
@@ -260,7 +267,6 @@ class Algorithms:
             nodeToRemove = edgeToAppend.nodeB
             if len(odd_vert) > 0:
                 odd_vert.remove(nodeToRemove)
-                # print(f"removing {nodeToRemove.key}")
 
     # Finds and returns the edges that are apart of the eulerian tour of the provided Graph MatchedMSTree
     # This is not working nor properly finished
@@ -327,12 +333,6 @@ class Algorithms:
                     break
 
         # Connect the last currentNode to the start node (it should be a neighbor) to make the cycle
-
-
-
-
-
-
 
         print("Neighbours: ")
         for nodePar in neighbours.keys():
