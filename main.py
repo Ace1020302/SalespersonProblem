@@ -172,6 +172,7 @@ def run():
             g.add_edge(labels[i], labels[j], weight=graph[i][j])
 
     printGraph(graph, labels)
+    #nx.path_weight(g, [g.nodes[0], g.nodes[1]], "weight:")
 
     pos = nx.spring_layout(g, seed=3113794652)
 

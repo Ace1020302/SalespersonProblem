@@ -18,7 +18,10 @@ class Algorithms:
         # Gets the nodes with an odd-degree of edges (1 edge, 3 edges, 5 edges, etc.)
         oddDegreeNodes = [i for i in mst.nodes if mst.degree(i) % 2]
 
-        matching = nx.min_weight_matching(networkxGraph.subgraph(oddDegreeNodes))
+        matching: nx.Graph = nx.min_weight_matching(networkxGraph.subgraph(oddDegreeNodes))
+
+        for node in matching:
+            print(node)
 
         matchingGraph:nx.MultiGraph = nx.MultiGraph()
 
@@ -26,6 +29,13 @@ class Algorithms:
 
         matchingGraph.add_edges_from(mst.edges())
         matchingGraph.add_edges_from(matching)
+
+
+
+        for edge in networkxGraph.edges:
+            print(edge)
+
+        nx.path_weight(networkxGraph, [networkxGraph.nodes[0], networkxGraph.nodes[1]], "weight")
 
         # print(matchingGraph)
         initTour = nx.eulerian_circuit(matchingGraph, source='a')
