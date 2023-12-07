@@ -2,7 +2,11 @@
 import copy
 import sys
 from collections import deque
-
+import math
+from itertools import permutations
+import time
+import multiprocessing
+from main import readNodes
 from Edge import Edge
 from Node import Node
 
@@ -61,8 +65,35 @@ class Algorithms:
         print(f'Final Node To Origin: {arr[r]} + {[0, 0]} = {finalToOrigin}')
         return time.time() - start, dist + finalToOrigin
 
-    def OptimialNaive(self, nodes):
-        pass
+    def permute_optimized(self, head):
+        remainingNodes = set(readNodes('tsp_14.txt')) - set(head)  # Removes the head from the set of nodes to permute
+        shortestDist = 10000000000
+        dist = None  # Distance at the end of the loop
+        for tail in permutations(remainingNodes, 4):  # Tracks for every permutation of the remaining nodes
+            if head in tail:  # Ensures no self-edges included
+                continue
+            distTrack = math.dist([0, 0, 0], head)
+            for i in range(1, len(tail) - 1):  # Calculating the distances between each node in the new list
+                if i == 1:
+                    dist = distTrack + math.dist(head, tail[i])
+                    distTrack = dist
+                else:
+                    dist = distTrack + math.dist(tail[i - 1], tail[i])
+                    distTrack = dist
+            if dist < shortestDist:  # If our final distance is shorter than a previous calculated distance, replace it
+                shortestDist = dist
+                # print(f'Head: {head}\nTail: {tail}')
+                # print(f'Distance: {shortestDist}')
+        return shortestDist
+
+    def optimizer(self, nodes):
+        start = time.time()
+        with multiprocessing.Pool() as pool:
+            all_paths = pool.map(self.permute_optimized, nodes)  # Allocates processes to every processor core in PC, returns a list of all shortest paths
+
+        print(f'Shortest Distance: {min(all_paths)}')  # Takes the shortest of the shortest paths
+        print(time.time() - start)
+        print(multiprocessing.cpu_count())
 
     def Approximation(self, edgeGraph, nodes, start):
         # These nodes are actually node objects!
@@ -249,7 +280,7 @@ class Algorithms:
                 listOfStuff.append(node.key)
             print(f"{nodePar.key:<3} | {listOfStuff}")
 
-        startNode =
+       # startNode =
 
 
         # return EP
@@ -374,8 +405,7 @@ class Algorithms:
                 # print("Did not append")
         return arr
 
-    def GreedyBound(self, nodes):
-        pass
+
 
     def CanBeRemoved(self, MatchedMSTree, edge):
         return True
