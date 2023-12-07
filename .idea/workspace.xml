@@ -371,7 +371,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Current Project Files" />
     <MESSAGE value="Github creation files" />
     <MESSAGE value="Added reading file functionality" />
     <MESSAGE value="Trying to add in adjacency matrix setup" />
@@ -396,7 +395,8 @@
     <MESSAGE value="I'm going insane" />
     <MESSAGE value="This is it... I'm done" />
     <MESSAGE value="Added a switcher. Travis add code!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added a switcher. Travis add code!" />
+    <MESSAGE value="documentation" />
+    <option name="LAST_COMMIT_MESSAGE" value="documentation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
