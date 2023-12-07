@@ -15,6 +15,7 @@ import Algorithms
 # Travis:
 # Noah:
 # Jason:
+import AlgorithmsTMP
 from Edge import Edge
 from Node import Node
 
@@ -175,10 +176,10 @@ def run():
 
 
     # nx.draw(g, pos=pos, with_labels=True)
-    algo = Algorithms.Algorithms()
+    algo = AlgorithmsTMP.Algorithms()
     #
-    #tmpVar = algo.N_Approximation(edge_graph, new_nodes, new_nodes[0])
-    algo.optimizer(nodes)
+    tmpVar = algo.N_Approximation(g)
+    # algo.optimizer(nodes)
     # plt.savefig("filename.png")
 
 
