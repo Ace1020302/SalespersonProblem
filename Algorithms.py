@@ -109,7 +109,7 @@ class Algorithms:
         self.minimum_weight_matching(mstEdges, edgeGraph, oddDegreeNodes)
 
         # Eulerian tour
-        ep = self.find_eulerian_tour(mstEdges, edgeGraph)
+        ep = self.find_eulerian_tour(mstEdges, edgeGraph, nodes)
 
 
 
@@ -173,7 +173,7 @@ class Algorithms:
                 odd_vert.remove(nodeToRemove)
                 # print(f"removing {nodeToRemove.key}")
 
-    def find_eulerian_tour(self, MatchedMSTree, G):
+    def find_eulerian_tour(self, MatchedMSTree, G, nodes):
 
         print("=" * 100)
         for edge in MatchedMSTree:
@@ -203,6 +203,39 @@ class Algorithms:
 
             if(nodeA not in neighbours[nodeB]):
                 neighbours[nodeB].append(nodeA)
+        # End of for loop
+
+        visitedNodes = []
+        currentNode = nodes[0]
+        visitedNodes.append(currentNode)
+        # Pick a neighbor and see if the edge can safely be removed and if it is not in visitedNodes
+        #  - if not move to next neighbour until out of neighbours (should be termination?)
+        #  - if so, travel the edge from the graph and then set the current node to the node at end of edge traveled.
+
+        notFinished = True
+        while(notFinished):
+            neighs = neighbours[currentNode]
+
+            for i in range(len(neighs)):
+                # gets the current neighbor node
+                currentNeigh = neighs[i]
+
+                # if the index is the same as the length, then it no longer has any nodes to connect to. We are finished
+                if i == len(neighs):
+                    notFinished = False
+
+                # if the neighbor has been visited before, don't bother connecting to it
+                if currentNeigh in visitedNodes:
+                    continue # move on to next neighbor
+
+                # If the edge can safely be removed, then travel and restart the whole for loop from that new node
+                if self.CanBeRemoved(MatchedMSTree, G[currentNode][currentNeigh]):
+                    currentNode = currentNeigh
+                    visitedNodes.append(currentNode)
+                    break
+
+        # Connect the last currentNode to the start node (it should be a neighbor) to make the cycle
+
 
 
 
@@ -216,6 +249,7 @@ class Algorithms:
                 listOfStuff.append(node.key)
             print(f"{nodePar.key:<3} | {listOfStuff}")
 
+        startNode =
 
 
         # return EP
@@ -342,3 +376,6 @@ class Algorithms:
 
     def GreedyBound(self, nodes):
         pass
+
+    def CanBeRemoved(self, MatchedMSTree, edge):
+        return True
