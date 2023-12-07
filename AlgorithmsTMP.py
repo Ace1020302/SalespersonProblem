@@ -8,20 +8,16 @@ class Algorithms:
         shortestPath = []
 
         nv = networkxGraph.nodes
-        print(networkxGraph)
 
         # Returns a graph
         mst: nx.Graph = nx.minimum_spanning_tree(networkxGraph)
 
-        print(mst)
+        #print(mst)
 
         # Gets the nodes with an odd-degree of edges (1 edge, 3 edges, 5 edges, etc.)
         oddDegreeNodes = [i for i in mst.nodes if mst.degree(i) % 2]
 
         matching: nx.Graph = nx.min_weight_matching(networkxGraph.subgraph(oddDegreeNodes))
-
-        for node in matching:
-            print(node)
 
         matchingGraph:nx.MultiGraph = nx.MultiGraph()
 
@@ -30,15 +26,10 @@ class Algorithms:
         matchingGraph.add_edges_from(mst.edges())
         matchingGraph.add_edges_from(matching)
 
-
-
-        for edge in networkxGraph.edges:
-            print(edge)
-
-        nx.path_weight(networkxGraph, [networkxGraph.nodes[0], networkxGraph.nodes[1]], "weight")
-
         # print(matchingGraph)
-        initTour = nx.eulerian_circuit(matchingGraph, source='a')
+        sourceNode = "d"
+        initTour = nx.eulerian_circuit(matchingGraph, source=sourceNode)
+
         newTour = []
 
         # Gets rid of repeating j's in the initial tour
@@ -46,6 +37,16 @@ class Algorithms:
             if j not in newTour:
                 newTour.append(j)
 
+        #tour_edges = [(initTour[i-1], initTour[i]) for i in ]
+        u = 0
+        v = 0
         print(newTour)
+        sum = 0
+        for i in range(1, len(newTour)):
+            u = newTour[i - 1]
+            v = newTour[i]
+            sum += networkxGraph.get_edge_data(u, v)["weight"]
 
+        # Total Distance: 64952.93 from Harrison | 64938.95920682345 from our approx
+        print(sum)
         return shortestPath

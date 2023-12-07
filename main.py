@@ -151,10 +151,9 @@ def run():
     nodes = readNodes("tsp_14.txt")
     new_nodes = readNewNodes("tsp_14.txt")
     labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o']
+
     # Testing Purposes Only
-
     g = nx.Graph()
-
     graph = (compute_graph(nodes))
     edge_graph = compute_edge_graph(new_nodes)
 
@@ -172,7 +171,7 @@ def run():
             g.add_edge(labels[i], labels[j], weight=graph[i][j])
 
     printGraph(graph, labels)
-    #nx.path_weight(g, [g.nodes[0], g.nodes[1]], "weight:")
+
 
     pos = nx.spring_layout(g, seed=3113794652)
 
