@@ -14,15 +14,12 @@ from Node import Node
 class Algorithms:
     #Naive Brute Force Algo
     def Naive(self, graph, nodes):
-<<<<<<< Updated upstream
         print(self.permute_iterative(nodes, 0, 5, graph, 1000000))
-=======
         # sanity check
         arr1 = [(-193, 8782, 2), (-5168, 2636, 3), (-4521, 1266, 11), (-7005, 2118, 6),
                 (-9860, 1311, 13), (-9955, -2923, 5), (-8022, -3864, 4), (-7795, -5000, 10), (-3138, -2512, 0),
                 (7775, -8002, 7), (9478, -1973, 9), (6804, -1072, 1), (4244, -1339, 8), (-192, 3337, 12)]
         print(self.permute_iterative(nodes, 0, 10, graph, 1000000))  # 10 nodes hit
->>>>>>> Stashed changes
         pass
 
     # Calculates the path of each individual node between another node
@@ -71,11 +68,8 @@ class Algorithms:
         remainingNodes = nodes
         shortestDist = 10000000000
         dist = None  # Distance at the end of the loop
-<<<<<<< Updated upstream
-        for tail in permutations(remainingNodes, 5):  # Tracks for every permutation of the remaining nodes
-=======
+
         for tail in permutations(remainingNodes, 6):  # Tracks for every permutation of the remaining nodes
->>>>>>> Stashed changes
             if head in tail:  # Ensures no self-edges included
                 continue
             distTrack = math.dist([0, 0, 0], head) #Distance from origin to our cutoff head node
