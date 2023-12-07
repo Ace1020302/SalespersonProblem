@@ -1,6 +1,4 @@
 # This is where we will do the algorithms
-import copy
-import sys
 from collections import deque
 import math
 from itertools import permutations
@@ -9,7 +7,7 @@ import multiprocessing
 from main import readNodes
 from Edge import Edge
 from Node import Node
-
+import networkx as nx
 
 class Algorithms:
     #Naive Brute Force Algo
@@ -93,7 +91,11 @@ class Algorithms:
         print(f'Shortest Distance: {min(all_paths)}')  # Takes the shortest of the shortest paths
         print(time.time() - start)
 
-    def Approximation(self, edgeGraph, nodes, start):
+    # MST and standard pre-order walk approach without any external library
+    # prints the cost of the approximated path
+    # Returns a Hamiltonian cycle (list) of edges that are apart of the approximation
+    # TODO: Go through and find any logical errors in algorithm
+    def Older_Approximation(self, edgeGraph, nodes, start):
         # These nodes are actually node objects!
         shortestPath = []
 
@@ -109,7 +111,71 @@ class Algorithms:
 
         return shortestPath
 
-    def N_Approximation(self, edgeGraph, nodes, start):
+    # Christofides approximation approach using networkx
+    # prints the cost of the approximated path
+    # Returns a Hamiltonian cycle (list) of edges that are apart of the approximation
+    def N_Approximation(self, networkxGraph: nx.Graph):
+        # These nodes are actually node objects!
+        shortestPath = []
+
+        nv = networkxGraph.nodes
+
+        # gets the mst
+        mst: nx.Graph = nx.minimum_spanning_tree(networkxGraph)
+
+        # Gets the nodes with an odd-degree of edges (1 edge, 3 edges, 5 edges, etc.)
+        oddDegreeNodes = [i for i in mst.nodes if mst.degree(i) % 2]
+
+        # Gets the minimum weight perfect matching of the nodes with an odd degree of edges
+        matching = nx.min_weight_matching(networkxGraph.subgraph(oddDegreeNodes))
+
+        # Stores matching in a MultiGraph
+        matchingGraph:nx.MultiGraph = nx.MultiGraph()
+
+        # Add (into the matching MultiGraph) the nodes from the network
+        matchingGraph.add_nodes_from(nv)
+
+        # Merge the nodes that have edges in the mst and the matching
+        matchingGraph.add_edges_from(mst.edges())
+        matchingGraph.add_edges_from(matching)
+
+        # print(matchingGraph)
+
+        # Source node is the node the circuit starts and loops back to. For this case, we leave it at 'd'
+        # Realistically, we could set this as the first node of the network graph
+        sourceNode = "d"
+
+        # Initial tour to establish the eulerian circuit
+        initTour = nx.eulerian_circuit(matchingGraph, source=sourceNode)
+
+        # This will hold the edges that are a part of the hamilationian cycle
+        newTour = []
+
+        # Gets rid of repeating j's in the initial eulerian circuit
+        for (i, j) in initTour:
+            if j not in newTour:
+                newTour.append(j)
+
+        # tour_edges = [(initTour[i-1], initTour[i]) for i in ]
+        u = 0
+        v = 0
+        print(newTour)
+        sum = 0
+        for i in range(1, len(newTour)):
+            u = newTour[i - 1]
+            v = newTour[i]
+            sum += networkxGraph.get_edge_data(u, v)["weight"]
+
+        # Total Distance: 64952.93 from Harrison | 64938.95920682345 from our approx
+        # We average in a range of 4,000 margin of error depending on the source node
+        print(sum)
+        return shortestPath
+
+    # MST and Min-Weight-Matching approach without any external library
+    # prints the cost of the approximated path
+    # Returns a Hamiltonian cycle (list) of edges that are apart of the approximation
+    # TODO: Go through and find any logical errors in algorithm
+    def Old_Approximation(self, edgeGraph, nodes, start):
         # These nodes are actually node objects!
         shortestPath = []
 
@@ -145,6 +211,9 @@ class Algorithms:
         return shortestPath
 
     # https://github.com/Retsediv/ChristofidesAlgorithm/blob/master/christofides.py
+    # Derived from the repo above
+    # For nodes with odd degree edges, this will find edges between them such that those edges have the minimum cost
+    # TODO: Go through and find any logical errors in algorithm
     def minimum_weight_matching(self, MST, G, odd_vert):
         import random
         random.shuffle(odd_vert)
@@ -202,6 +271,9 @@ class Algorithms:
                 odd_vert.remove(nodeToRemove)
                 # print(f"removing {nodeToRemove.key}")
 
+    # Finds and returns the edges that are apart of the eulerian tour of the provided Graph MatchedMSTree
+    # This is not working nor properly finished
+    # TODO: Go through and find any logical errors in algorithm
     def find_eulerian_tour(self, MatchedMSTree, G, nodes):
 
         print("=" * 100)
@@ -278,11 +350,7 @@ class Algorithms:
                 listOfStuff.append(node.key)
             print(f"{nodePar.key:<3} | {listOfStuff}")
 
-       # startNode =
-
-
-        # return EP
-
+    # Remove edge at coordinate (v1, v2) from the provided graph
     def remove_edge_from_matchedMST(self, MatchedMST, v1, v2):
 
         for i, edge in enumerate(MatchedMST):
@@ -292,6 +360,9 @@ class Algorithms:
 
         return MatchedMST
 
+    # Deprecated Code for the approximation. This involved the pre-order walk
+    # DEPRECATED!
+    # TODO: Continue research on checking if there is a faster way to implement multiprocessing, this implementation is slower than naive somehow
     def tmp(self, edgeGraph, mst, node_dict, shortestPath, start, nodes):
         node_dict = {node.key: node for node in nodes}
 
@@ -323,12 +394,16 @@ class Algorithms:
             print(shortestPath[i].key, end=', ')
         return shortestPath
 
+    # Goes through a given queue of a set of nodes and creates the pre-order walk
+    # TODO: Continue research on checking if there is a faster way to implement multiprocessing, this implementation is slower than naive somehow
     def preorder_walk(self, node, queue):
         # shortestPath.append(node.key)
         queue.append(node)
         for child in node.children:
             self.preorder_walk(child, queue)
 
+    # Prim's algorithm implemented such that it is compatible with underlying data structures of project
+    # TODO: Go through and find any logical errors in algorithm
     def MST_Prim(self, edgeGraph, nodes, startNode, n):
         # mst arr
         mst = [startNode]
@@ -371,6 +446,7 @@ class Algorithms:
 
         return mst
 
+    # Finds the minimum edge from a list of edges
     def findMinEdge(self, edges, exclusionList):
         # Find minimum cost edge
         minEdge = edges[0]
@@ -402,8 +478,3 @@ class Algorithms:
                 pass
                 # print("Did not append")
         return arr
-
-
-
-    def CanBeRemoved(self, MatchedMSTree, edge):
-        return True
