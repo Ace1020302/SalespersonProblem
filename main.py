@@ -179,8 +179,12 @@ def run():
     while option != 0:
         # print(option)
         if option == 1:
+            algo = Algorithms.Algorithms()
+            tmpVar = algo.Naive(graph, nodes)
             pass
         elif option == 2:
+            algo = Algorithms.Algorithms()
+            tmpVar = algo.optimizer(nodes)
             pass
         elif option == 3:
             algo = AlgorithmsTMP.Algorithms()
