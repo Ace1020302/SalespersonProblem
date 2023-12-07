@@ -65,6 +65,7 @@ class Algorithms:
         print(f'Final Node To Origin: {arr[r]} + {[0, 0]} = {finalToOrigin}')
         return time.time() - start, dist + finalToOrigin
 
+    #TODO: Continue research on checking if there is a faster way to implement multiprocessing, this implementation is slower than naive somehow
     def permute_optimized(self, head):
         remainingNodes = set(readNodes('tsp_14.txt')) - set(head)  # Removes the head from the set of nodes to permute
         shortestDist = 10000000000
