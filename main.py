@@ -189,8 +189,10 @@ def run():
         elif option == 3:
             algo = AlgorithmsTMP.Algorithms()
             tmpVar = algo.N_Approximation(g)
+        print()
         option = input("0: Quit\n1: Brute\n2: Optimal Brute\n3: Approximation\nInput: ")
         option = int(option)
+        print()
 
 
     print("goodbye")
