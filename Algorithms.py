@@ -12,12 +12,9 @@ from Node import Node
 
 
 class Algorithms:
+    #Naive Brute Force Algo
     def Naive(self, graph, nodes):
-        # sanity check
-        arr1 = [(-193, 8782, 2), (-5168, 2636, 3), (-4521, 1266, 11), (-7005, 2118, 6),
-                (-9860, 1311, 13), (-9955, -2923, 5), (-8022, -3864, 4), (-7795, -5000, 10), (-3138, -2512, 0),
-                (7775, -8002, 7), (9478, -1973, 9), (6804, -1072, 1), (4244, -1339, 8), (-192, 3337, 12)]
-        print(self.permute_iterative(nodes, 0, 11, graph, 1000000))  # 10 nodes hit
+        print(self.permute_iterative(nodes, 0, 5, graph, 1000000))
         pass
 
     # Calculates the path of each individual node between another node
@@ -31,24 +28,19 @@ class Algorithms:
 
     # Every permutation of the possible nodes
     def permute_iterative(self, arr, l, r, graph, dist):
-        import time
-        import math
-
         stack = []  # stack to hold the list of nodes and the first and final index
-        stack.append((list(arr), l, r))
+        stack.append((list(arr), l, r)) #Holds every possible permutations
 
         source = arr[0]  # Keeping track of what our "source" node is
         start = time.time()
         while stack:
-            arr, l, r = stack.pop()
+            arr, l, r = stack.pop() #Pops off the latest permutation of the path
             origDist = 0  # Reset original distance
 
             if l == r:
                 if source != arr[0]:
                     source = arr[0]
-                    origDist = math.dist([0, 0, 0],
-                                         arr[0])  # Calculating the distance from the origin to our first point
-                    #print(f'From Origin: {0, 0} + {arr[0]} = {origDist}')
+                    origDist = math.dist([0, 0, 0], arr[0])  # Calculating the distance from the origin to our first point
                 newDist = origDist + self.calculate_path_cost(arr, graph)
                 #print(f'Distance: {newDist}')
                 #time.sleep(5)
@@ -58,24 +50,23 @@ class Algorithms:
                 #print(arr)
             else:
                 for i in range(l, r):
-                    arr[l], arr[i] = arr[i], arr[l]
-                    stack.append((list(arr), l + 1, r))
-                    arr[l], arr[i] = arr[i], arr[l]
-        finalToOrigin = math.dist(arr[r], [0, 0, 0])
-        #print(f'Final Node To Origin: {arr[r]} + {[0, 0]} = {finalToOrigin}')
-        return time.time() - start, dist + finalToOrigin
+                    arr[l], arr[i] = arr[i], arr[l] #Swaps two nodes in the path
+                    stack.append((list(arr), l + 1, r)) #Adds that new permutation to the stack
+                    arr[l], arr[i] = arr[i], arr[l] #Swaps back
+        finalToOrigin = math.dist(arr[r], [0, 0, 0]) #Distance from the last node back to origin
+        return time.time() - start, dist + finalToOrigin #Returns the time and the final distance
 
-    #TODO: Continue research on checking if there is a faster way to implement multiprocessing, this implementation is slower than naive somehow
+    #Multiprocessed Permutations
     def permute_optimized(self, head):
         nodes = set(readNodes('tsp_14.txt'))
         nodes.remove(head)
         remainingNodes = nodes
         shortestDist = 10000000000
         dist = None  # Distance at the end of the loop
-        for tail in permutations(remainingNodes, 11):  # Tracks for every permutation of the remaining nodes
+        for tail in permutations(remainingNodes, 5):  # Tracks for every permutation of the remaining nodes
             if head in tail:  # Ensures no self-edges included
                 continue
-            distTrack = math.dist([0, 0, 0], head)
+            distTrack = math.dist([0, 0, 0], head) #Distance from origin to our cutoff head node
             for i in range(1, len(tail) - 1):  # Calculating the distances between each node in the new list
                 if i == 1:
                     dist = distTrack + math.dist(head, tail[i])
@@ -85,10 +76,9 @@ class Algorithms:
                     distTrack = dist
             if math.dist(tail[-1], [0, 0, 0]) + dist < shortestDist:  # If our final distance is shorter than a previous calculated distance, replace it
                 shortestDist = math.dist(tail[-1], [0,0,0]) + dist
-                # print(f'Head: {head}\nTail: {tail}')
-                # print(f'Distance: {shortestDist}')
         return shortestDist
 
+    #Optimized Brute Force Algo
     def optimizer(self, nodes):
         start = time.time()
         with multiprocessing.Pool() as pool:
@@ -96,7 +86,6 @@ class Algorithms:
 
         print(f'Shortest Distance: {min(all_paths)}')  # Takes the shortest of the shortest paths
         print(time.time() - start)
-        print(multiprocessing.cpu_count())
 
     def Approximation(self, edgeGraph, nodes, start):
         # These nodes are actually node objects!
