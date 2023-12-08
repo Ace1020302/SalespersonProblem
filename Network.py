@@ -1,3 +1,11 @@
+#
+#   File:       Network.py
+#   Project:    Traveling Salesperson
+#   Date:       12.07.23
+#   Group:      Algo-Holics (Phillip, Jason, Travis, Noah, Aaron)
+#   Purpose:    Relic code: graph class prototypes, not in use
+#
+
 from Edge import Edge
 from Node import Node
 

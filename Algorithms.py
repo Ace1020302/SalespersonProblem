@@ -110,7 +110,7 @@ class Algorithms:
 
     # Christofides approximation approach using networkx
     # prints the cost of the approximated path
-    # Returns a Hamiltonian cycle (list) of edges that are apart of the approximation
+    # Returns a Hamiltonian cycle (list) of edges that are a part of the approximation
     def N_Approximation(self, networkxGraph: nx.Graph):
         # These nodes are actually node objects!
         shortestPath = []
@@ -140,13 +140,13 @@ class Algorithms:
         # Realistically, we could set this as the first node of the network graph
         sourceNode = "d"
 
-        # Initial tour to establish the eulerian circuit
+        # Initial tour to establish the Eulerian circuit
         initTour = nx.eulerian_circuit(matchingGraph, source=sourceNode)
 
-        # This will hold the edges that are a part of the hamilationian cycle
+        # This will hold the edges that are a part of the Hamiltonian cycle
         newTour = []
 
-        # Gets rid of repeating j's in the initial eulerian circuit
+        # Gets rid of repeating j-node visits in the initial Eulerian circuit
         for (i, j) in initTour:
             if j not in newTour:
                 newTour.append(j)
@@ -182,6 +182,8 @@ class Algorithms:
         oddDegreeNodes = []
         for node in mst:
             # print(f"Node - {node.key:<5} | # of Children - {len(node.children):<5} |  Children {node.getChildrenKeys()}")
+            # Error: Doesn't account for presence of parent (2 children + 1 parent => odd degree)
+            #        Fix involves additional check if parent isn't null and then adding 1 to len(node.children) before % 2
             if len(node.children) % 2 != 0:
                 oddDegreeNodes.append(node)
 
@@ -203,8 +205,6 @@ class Algorithms:
 
         # Eulerian tour
         ep = self.find_eulerian_tour(mstEdges, edgeGraph, nodes)
-
-
 
         return shortestPath
 
@@ -335,11 +335,11 @@ class Algorithms:
         # Connect the last currentNode to the start node (it should be a neighbor) to make the cycle
 
         print("Neighbours: ")
-        for nodePar in neighbours.keys():
+        for nodePair in neighbours.keys():
             listOfStuff = []
-            for node in neighbours[nodePar]:
+            for node in neighbours[nodePair]:
                 listOfStuff.append(node.key)
-            print(f"{nodePar.key:<3} | {listOfStuff}")
+            print(f"{nodePair.key:<3} | {listOfStuff}")
 
     # Remove edge at coordinate (v1, v2) from the provided graph
     def remove_edge_from_matchedMST(self, MatchedMST, v1, v2):

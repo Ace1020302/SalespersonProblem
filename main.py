@@ -52,7 +52,7 @@ def getDist(a, b):
     return math.dist(a, b)
 
 
-# calculates each node's distance in an adjancey matrix
+# calculates each node's distance in an adjacency matrix
 def compute_graph(nodes):
     # Store the graph with the distances. This is really an adjacency matrix (2D array)
     # Set up adjacency matrix dimensions, square matrix len(nodes) by len(nodes)
@@ -79,7 +79,7 @@ def compute_graph(nodes):
     return adj_mat
 
 
-# prints out the graph in a fancy format
+# prints out the graph in a tabulated format
 def printGraph(graph, labels):
     if len(graph[0]) > len(labels):
         print("Can't print table, not enough labels")
@@ -121,7 +121,7 @@ def compute_edge_graph(nodes):
     return adj_mat
 
 
-# Shows the plot in sciview (external window or in ide depending on ide)
+# Shows the plot in Pycharm SciView (external window or in ide depending on ide)
 def draw_plot():
     plt.show()
 
